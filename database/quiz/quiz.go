@@ -8,8 +8,8 @@ import (
 
 type (
 	Quiz struct {
-		quizID   string
-		CourseID string `json:"courseID"`
+		QuizID   string `json:"quizID"`
+		courseID string
 		Title    string `json:"title"`
 	}
 	Quizzes []Quiz
@@ -33,7 +33,7 @@ func AddRecord(courseID, title string) {
 func GetQuizzesByCourseID(courseID string) Quizzes {
 	var response Quizzes
 	for _, quiz := range *quizzes {
-		if quiz.CourseID == courseID {
+		if quiz.courseID == courseID {
 			response = append(response, quiz)
 		}
 	}

@@ -8,8 +8,10 @@ import (
 
 type (
 	Question struct {
-		questionID, quizID, title string
-		maxScore                  int
+		quizID     string
+		QuestionID string `json:"questionID"`
+		Title      string `json:"title"`
+		MaxScore   int    `json:"maxScore"`
 	}
 	Questions []Question
 )
@@ -27,6 +29,16 @@ func Connect() {
 
 func AddRecord(quizID, title string, maxScore int) string {
 	questionID := uuid.New().String()
-	*questions = append(*questions, Question{questionID, quizID, title, maxScore})
+	*questions = append(*questions, Question{quizID, questionID, title, maxScore})
 	return questionID
+}
+
+func GetQuestionsByQuizID(quizID string) Questions {
+	var response Questions
+	for _, question := range *questions {
+		if question.quizID == quizID {
+			response = append(response, question)
+		}
+	}
+	return response
 }

@@ -4,8 +4,9 @@ import "sync"
 
 type (
 	QuestionResult struct {
-		questionID, studentID string
-		score                 int
+		questionID string
+		studentID  int
+		score      int
 	}
 	QuestionResults []QuestionResult
 )
@@ -21,6 +22,6 @@ func Connect() {
 	})
 }
 
-func AddRecord(questionID, studentID string, score int) {
+func AddRecord(questionID string, studentID int, score int) {
 	*questionresults = append(*questionresults, QuestionResult{questionID, studentID, score})
 }

@@ -5,7 +5,7 @@ import "sync"
 type (
 	Student struct {
 		CourseID    string `json:"courseID"`
-		StudentID   string `json:"studentID"`
+		StudentID   int    `json:"studentID"`
 		StudentName string `json:"studentName"`
 	}
 	Students []Student

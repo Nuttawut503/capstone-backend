@@ -5,6 +5,7 @@ import (
 	"backend/database/questionlink"
 	"backend/database/questionresult"
 	"backend/database/quiz"
+	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,14 +14,37 @@ func getQuizHandlers() *fiber.App {
 	app := fiber.New()
 
 	app.Get("/quizzes", func(c *fiber.Ctx) error {
-		// d
-		// o
-
-		// t
-		// h
-		// i
-		// s
-		return c.JSON(quiz.GetQuizzesByCourseID(c.Params("courseID", "")))
+		type Question struct {
+			QuestionID string `json:"questionID"`
+			Title      string `json:"title"`
+			MaxScore   int    `json:"maxScore"`
+		}
+		type Quiz struct {
+			QuizID    string     `json:"quizID"`
+			Title     string     `json:"title"`
+			Questions []Question `json:"questions"`
+		}
+		quizzes := make([]Quiz, 0)
+		simplifiedQuiz := quiz.GetQuizzesByCourseID(c.Query("courseID"))
+		for _, q := range simplifiedQuiz {
+			questions := make([]Question, 0)
+			for _, v := range question.GetQuestionsByQuizID(q.QuizID) {
+				questions = append(questions, Question{
+					QuestionID: v.QuestionID,
+					Title:      v.Title,
+					MaxScore:   v.MaxScore,
+				})
+			}
+			quizzes = append(quizzes, Quiz{
+				QuizID:    q.QuizID,
+				Title:     q.Title,
+				Questions: questions,
+			})
+		}
+		if len(quizzes) == 0 {
+			quizzes = make([]Quiz, 0)
+		}
+		return c.JSON(quizzes)
 	})
 
 	app.Post("/quiz", func(c *fiber.Ctx) error {
@@ -38,21 +62,27 @@ func getQuizHandlers() *fiber.App {
 	app.Post("/questions", func(c *fiber.Ctx) error {
 		var newResult struct {
 			QuizID    string `json:"quizID"`
-			Questions []struct {
-				Title        string `json:"title"`
-				Maxscore     int    `json:"maxscore"`
-				StudentID    string `json:"studentID"`
-				StudentScore int    `json:"studentScore,int"`
-			} `json:"questions"`
+			Questions string `json:"questions"`
 		}
 		if err := c.BodyParser(&newResult); err != nil {
 			return err
 		}
+		type Question struct {
+			Title        string `json:"title"`
+			Maxscore     int    `json:"maxScore"`
+			StudentID    int    `json:"studentID"`
+			StudentScore int    `json:"studentScore"`
+		}
+		var newQuestions []Question
+		if err := json.Unmarshal([]byte(newResult.Questions), &newQuestions); err != nil {
+			return err
+		}
 		questionTitle := map[string]string{}
-		for _, q := range newResult.Questions {
+		for _, q := range newQuestions {
 			questionID, added := questionTitle[q.Title]
 			if !added {
-				question.AddRecord(newResult.QuizID, q.Title, q.Maxscore)
+				questionID := question.AddRecord(newResult.QuizID, q.Title, q.Maxscore)
+				questionTitle[q.Title] = questionID
 			}
 			questionresult.AddRecord(questionID, q.StudentID, q.StudentScore)
 		}
@@ -62,12 +92,12 @@ func getQuizHandlers() *fiber.App {
 	app.Get("/questionlinks", func(c *fiber.Ctx) error {
 		// d
 		// o
-		c.Params("questionID", "")
+		c.Query("questionID")
 		// t
 		// h
 		// i
 		// s
-		return c.JSON(quiz.GetQuizzesByCourseID(c.Params("courseID", "")))
+		return c.JSON(quiz.GetQuizzesByCourseID(c.Query("courseID")))
 	})
 
 	app.Post("/questionlink", func(c *fiber.Ctx) error {

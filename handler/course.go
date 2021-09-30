@@ -6,6 +6,7 @@ import (
 	"backend/database/lolevel"
 	"backend/database/plolink"
 	"backend/database/student"
+	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -64,16 +65,20 @@ func getCourseHandlers() *fiber.App {
 
 	app.Post("/students", func(c *fiber.Ctx) error {
 		var newStudents struct {
-			CourseID string            `json:"courseID"`
-			Students []student.Student `json:"students"`
+			CourseID string `json:"courseID"`
+			Students string `json:"students"`
 		}
 		if err := c.BodyParser(&newStudents); err != nil {
 			return err
 		}
-		for i := range newStudents.Students {
-			newStudents.Students[i].CourseID = newStudents.CourseID
+		var students []student.Student
+		if err := json.Unmarshal([]byte(newStudents.Students), &students); err != nil {
+			return err
 		}
-		student.AddRecords(newStudents.Students)
+		for i := range students {
+			students[i].CourseID = newStudents.CourseID
+		}
+		student.AddRecords(students)
 		return c.SendStatus(fiber.StatusCreated)
 	})
 
@@ -84,7 +89,7 @@ func getCourseHandlers() *fiber.App {
 		// Level int    `json:"level,string"`
 		// Info  string `json:"info"`
 		var los []LOResponseType
-		simplelos := lo.GetLOsByCourseID(c.Query("CourseID"))
+		simplelos := lo.GetLOsByCourseID(c.Query("courseID"))
 		for _, simplelo := range simplelos {
 			levels := make([]SubLOResponseType, 0)
 			for _, slo := range lolevel.GetLevelInfoByLOID(simplelo[0]) {
@@ -98,6 +103,9 @@ func getCourseHandlers() *fiber.App {
 				Info:   simplelo[1],
 				Levels: levels,
 			})
+		}
+		if len(los) == 0 {
+			los = make([]LOResponseType, 0)
 		}
 		return c.JSON(los)
 	})
