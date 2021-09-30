@@ -18,7 +18,7 @@ func main() {
 		return c.SendString("Hello World!")
 	})
 
-	app.Mount("/api", handler.GetHandler())
+	app.Mount("/api", handler.GetHandlers())
 
 	app.Listen(":5000")
 }
