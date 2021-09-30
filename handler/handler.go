@@ -13,12 +13,13 @@ import (
 	"backend/database/questionresult"
 	"backend/database/quiz"
 	"backend/database/student"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type SubLOResponseType struct {
-	Level int    `json:"level"`
+	Level int    `json:"level,string"`
 	Info  string `json:"info"`
 }
 
@@ -52,7 +53,7 @@ func GetHandler() *fiber.App {
 	})
 
 	app.Get("/plos", func(c *fiber.Ctx) error {
-		ploIDs := plo.GetPLOIDsByProgranID(c.Params("programID", ""))
+		ploIDs := plo.GetPLOIDsByProgranID(c.Query("programID"))
 		plos := ploversion.GetRecords(ploIDs)
 		return c.JSON(plos)
 	})
@@ -71,7 +72,7 @@ func GetHandler() *fiber.App {
 	})
 
 	app.Get("/courses", func(c *fiber.Ctx) error {
-		courses := course.GetRecords(c.Params("programID", ""))
+		courses := course.GetRecords(c.Query("programID"))
 		if len(courses) == 0 {
 			courses = make(course.Courses, 0)
 		}
@@ -82,10 +83,11 @@ func GetHandler() *fiber.App {
 		var newCourse struct {
 			ProgramID string `json:"programID"`
 			Name      string `json:"name"`
-			Semester  int    `json:"semester"`
-			Year      int    `json:"year"`
+			Semester  int    `json:"semester,string"`
+			Year      int    `json:"year,string"`
 		}
 		if err := c.BodyParser(&newCourse); err != nil {
+			fmt.Println(err)
 			return err
 		}
 		course.AddRecord(newCourse.ProgramID, newCourse.Name, newCourse.Semester, newCourse.Year)
@@ -93,7 +95,7 @@ func GetHandler() *fiber.App {
 	})
 
 	app.Get("/students", func(c *fiber.Ctx) error {
-		students := student.GetRecords(c.Params("courseID", ""))
+		students := student.GetRecords(c.Query("courseID"))
 		if len(students) == 0 {
 			students = make(student.Students, 0)
 		}
@@ -117,7 +119,7 @@ func GetHandler() *fiber.App {
 
 	app.Get("/los", func(c *fiber.Ctx) error {
 		var los []LOResponseType
-		simplelos := lo.GetLOsByCourseID(c.Params("CourseID", ""))
+		simplelos := lo.GetLOsByCourseID(c.Query("CourseID"))
 		for _, simplelo := range simplelos {
 			levels := make([]SubLOResponseType, 0)
 			for _, slo := range lolevel.GetLevelInfoByLOID(simplelo[0]) {
@@ -151,7 +153,7 @@ func GetHandler() *fiber.App {
 		var newLOLevel struct {
 			LOID  string `json:"loID"`
 			Info  string `json:"info"`
-			Level int    `json:"level"`
+			Level int    `json:"level,string"`
 		}
 		if err := c.BodyParser(&newLOLevel); err != nil {
 			return err
@@ -202,7 +204,7 @@ func GetHandler() *fiber.App {
 				Title        string `json:"title"`
 				Maxscore     int    `json:"maxscore"`
 				StudentID    string `json:"studentID"`
-				StudentScore int    `json:"studentScore"`
+				StudentScore int    `json:"studentScore,int"`
 			} `json:"questions"`
 		}
 		if err := c.BodyParser(&newResult); err != nil {
@@ -234,7 +236,7 @@ func GetHandler() *fiber.App {
 		var newQuestionLink struct {
 			QuestionID string `json:"questionID"`
 			LOID       string `json:"loID"`
-			LOLevel    int    `json:"loLevel"`
+			LOLevel    int    `json:"loLevel,int"`
 		}
 		if err := c.BodyParser(&newQuestionLink); err != nil {
 			return err
