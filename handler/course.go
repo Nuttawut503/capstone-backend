@@ -5,6 +5,7 @@ import (
 	"backend/database/lo"
 	"backend/database/lolevel"
 	"backend/database/plolink"
+	"backend/database/ploversion"
 	"backend/database/student"
 	"encoding/json"
 
@@ -133,6 +134,10 @@ func getCourseHandlers() *fiber.App {
 		}
 		lolevel.AddRecord(newLOLevel.LOID, newLOLevel.Info, newLOLevel.Level)
 		return c.SendStatus(fiber.StatusCreated)
+	})
+
+	app.Get("/plolinks", func(c *fiber.Ctx) error {
+		return c.JSON(ploversion.GetPLODetailByPLOIDs(plolink.GetPLOLinksByLOID(c.Query("loID"))))
 	})
 
 	app.Post("/plolink", func(c *fiber.Ctx) error {

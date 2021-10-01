@@ -6,7 +6,7 @@ import (
 
 type (
 	PLOLink struct {
-		ploID, loID string
+		PLOID, LOID string
 	}
 	PLOLinks []PLOLink
 )
@@ -21,6 +21,17 @@ func Connect() {
 		plolinks = new(PLOLinks)
 	})
 }
+
 func AddRecord(ploID, loID string) {
 	*plolinks = append(*plolinks, PLOLink{ploID, loID})
+}
+
+func GetPLOLinksByLOID(loID string) PLOLinks {
+	response := make(PLOLinks, 0)
+	for _, plolink := range *plolinks {
+		if plolink.LOID == loID {
+			response = append(response, plolink)
+		}
+	}
+	return response
 }

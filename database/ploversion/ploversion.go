@@ -1,6 +1,9 @@
 package ploversion
 
-import "sync"
+import (
+	"backend/database/plolink"
+	"sync"
+)
 
 type (
 	PLOVersion struct {
@@ -32,6 +35,18 @@ func GetRecords(ploIDs []string) PLOVersions {
 		// if plo.PloID in ploIDs; append
 		for _, ploID := range ploIDs {
 			if plo.PloID == ploID {
+				response = append(response, plo)
+			}
+		}
+	}
+	return response
+}
+
+func GetPLODetailByPLOIDs(pls plolink.PLOLinks) PLOVersions {
+	response := make(PLOVersions, 0)
+	for _, plo := range *ploversions {
+		for _, pl := range pls {
+			if plo.PloID == pl.PLOID {
 				response = append(response, plo)
 			}
 		}
