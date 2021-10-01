@@ -58,3 +58,40 @@ func (db *Database) addNewLOLevel(programID, courseID, loID string, level int, d
 func (db *Database) addPLOLink(programID, courseID, ploID, loID string) {
 	db.programs[programID].courses[courseID].los[loID].linkedploIDs[ploID] = true
 }
+
+func (db *Database) addQuiz(programID, courseID, quizName string) {
+	db.programs[programID].courses[courseID].quizzes[uuid.New().String()] = Quiz{
+		quizName:  quizName,
+		questions: map[string]Question{},
+	}
+}
+
+func (db *Database) addNewQuestion(programID, courseID, quizID string, questionExcel []QuestionExcel) {
+	questionIDs := map[string]string{}
+	questionMaxScores := map[string]int{}
+	questionMapResults := map[string][]QuestionResult{}
+	for _, v := range questionExcel {
+		id, added := questionIDs[v.QuestionTitle]
+		if !added {
+			id = uuid.New().String()
+			questionIDs[v.QuestionTitle] = id
+			questionMaxScores[id] = v.Maxscore
+			questionMapResults[id] = []QuestionResult{}
+		}
+		questionMapResults[id] = append(questionMapResults[id], QuestionResult{
+			studentID:    v.StudentID,
+			studentScore: v.StudentScore,
+		})
+	}
+	for question, id := range questionIDs {
+		db.programs[programID].courses[courseID].quizzes[quizID].questions[id] = Question{
+			questionTitle: question,
+			maxScore:      questionMaxScores[id],
+			results:       questionMapResults[id],
+		}
+	}
+}
+
+func (db *Database) addLOLink(programID, courseID, quizID, questionID, loID string, level int) {
+	db.programs[programID].courses[courseID].quizzes[quizID].questions[questionID].linkedloIDs[loID] = level
+}

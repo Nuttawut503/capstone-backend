@@ -244,5 +244,100 @@ func GetHandlers() *fiber.App {
 		return c.SendStatus(fiber.StatusCreated)
 	})
 
+	app.Get("quizzes", func(c *fiber.Ctx) error {
+		programID, courseID := c.Query("programID"), c.Query("courseID")
+		type (
+			LinkedLOFormat struct {
+				LOID             string `json:"loID"`
+				Level            int    `json:"level"`
+				LevelDescription string `json:"levelDescription"`
+			}
+			QuestionFormat struct {
+				QuestionID    string           `json:"questionID"`
+				QuestionTitle string           `json:"questionTitle"`
+				MaxScore      int              `json:"maxScore"`
+				LinkedLOs     []LinkedLOFormat `json:"linkedLOs"`
+			}
+			ResponseFormat struct {
+				QuizID    string           `json:"questionID"`
+				QuizName  string           `json:"questionTitle"`
+				Questions []QuestionFormat `json:"questions"`
+			}
+		)
+		response := make([]ResponseFormat, 0)
+		for quizID, quiz := range db.programs[programID].courses[courseID].quizzes {
+			questionFormats := make([]QuestionFormat, 0)
+			for questionID, question := range quiz.questions {
+				linkedLOs := make([]LinkedLOFormat, 0)
+				for loID, level := range question.linkedloIDs {
+					linkedLOs = append(linkedLOs, LinkedLOFormat{
+						LOID:             loID,
+						Level:            level,
+						LevelDescription: db.programs[programID].courses[courseID].los[loID].levels[level-1].levelDescription,
+					})
+				}
+				questionFormats = append(questionFormats, QuestionFormat{
+					QuestionID:    questionID,
+					QuestionTitle: question.questionTitle,
+					MaxScore:      question.maxScore,
+					LinkedLOs:     linkedLOs,
+				})
+			}
+			response = append(response, ResponseFormat{
+				QuizID:    quizID,
+				QuizName:  quiz.quizName,
+				Questions: questionFormats,
+			})
+		}
+		return c.JSON(response)
+	})
+
+	app.Post("quiz", func(c *fiber.Ctx) error {
+		var request struct {
+			ProgramID string `json:"programID"`
+			CourseID  string `json:"courseID"`
+			QuizName  string `json:"quizName"`
+		}
+		if err := c.BodyParser(&request); err != nil {
+			return err
+		}
+		db.addQuiz(request.ProgramID, request.CourseID, request.QuizName)
+		return c.SendStatus(fiber.StatusCreated)
+	})
+
+	app.Post("questions", func(c *fiber.Ctx) error {
+		var request struct {
+			ProgramID string `json:"programID"`
+			CourseID  string `json:"courseID"`
+			QuizID    string `json:"quizID"`
+			Questions string `json:"questions"`
+		}
+		if err := c.BodyParser(&request); err != nil {
+			return err
+		}
+		var newQuestions []QuestionExcel
+		if err := json.Unmarshal([]byte(request.Questions), &newQuestions); err != nil {
+			return err
+		}
+		db.addNewQuestion(request.ProgramID, request.CourseID, request.QuizID, newQuestions)
+		return c.SendStatus(fiber.StatusCreated)
+	})
+
+	app.Post("questionlink", func(c *fiber.Ctx) error {
+		var request struct {
+			ProgramID  string `json:"programID"`
+			CourseID   string `json:"courseID"`
+			QuizID     string `json:"quizID"`
+			QuestionID string `json:"questionID"`
+			LOID       string `json:"loID"`
+			Level      int    `json:"level,string"`
+		}
+		if err := c.BodyParser(&request); err != nil {
+			return err
+		}
+		db.addLOLink(request.ProgramID, request.CourseID, request.QuizID, request.QuestionID, request.LOID, request.Level)
+		return c.SendStatus(fiber.StatusCreated)
+	})
+
 	return app
 }
