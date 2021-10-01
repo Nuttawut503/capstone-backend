@@ -1,7 +1,6 @@
 package main
 
 import (
-	"backend/database"
 	"backend/handler"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,7 +8,6 @@ import (
 )
 
 func main() {
-	database.Connect()
 
 	app := fiber.New()
 	app.Use(cors.New())
