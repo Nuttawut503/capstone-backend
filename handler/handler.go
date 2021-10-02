@@ -412,6 +412,7 @@ func GetHandlers() *fiber.App {
 					}
 					if _, added := los[loID+","+strconv.Itoa(level)]; !added {
 						los[loID+","+strconv.Itoa(level)] = true
+						response.LOs[loID+","+strconv.Itoa(level)] = db.programs[programID].courses[courseID].los[loID].levels[level-1].levelDescription
 						linkedLOs = append(linkedLOs, loID+","+strconv.Itoa(level))
 					}
 				}
