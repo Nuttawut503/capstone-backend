@@ -1,6 +1,10 @@
 package handler
 
-import "github.com/google/uuid"
+import (
+	"strconv"
+
+	"github.com/google/uuid"
+)
 
 func (db *Database) createNewProgram(programName, programDescription string) {
 	db.programs[uuid.New().String()] = Program{
@@ -79,7 +83,7 @@ func (db *Database) addNewQuestion(programID, courseID, quizID string, questionE
 			questionMapResults[id] = []QuestionResult{}
 		}
 		questionMapResults[id] = append(questionMapResults[id], QuestionResult{
-			studentID:    v.StudentID,
+			studentID:    strconv.Itoa(v.StudentID),
 			studentScore: v.StudentScore,
 		})
 	}
@@ -88,10 +92,13 @@ func (db *Database) addNewQuestion(programID, courseID, quizID string, questionE
 			questionTitle: question,
 			maxScore:      questionMaxScores[id],
 			results:       questionMapResults[id],
+			linkedloIDs:   map[string]int{},
 		}
 	}
 }
 
 func (db *Database) addLOLink(programID, courseID, quizID, questionID, loID string, level int) {
-	db.programs[programID].courses[courseID].quizzes[quizID].questions[questionID].linkedloIDs[loID] = level
+	if lo, ok := db.programs[programID].courses[courseID].los[loID]; ok && 0 < level && level-1 < len(lo.levels) {
+		db.programs[programID].courses[courseID].quizzes[quizID].questions[questionID].linkedloIDs[loID] = level
+	}
 }

@@ -73,7 +73,6 @@ func GetHandlers() *fiber.App {
 			Year       int    `json:"year,string"`
 		}
 		if err := c.BodyParser(&request); err != nil {
-			fmt.Println(err)
 			return err
 		}
 		db.createNewCourse(request.ProgramID, request.CourseName, request.Semester, request.Year)
@@ -147,7 +146,6 @@ func GetHandlers() *fiber.App {
 			StudentSurname string `json:"studentSurname"`
 		}
 		if err := json.Unmarshal([]byte(request.Students), &students); err != nil {
-			fmt.Println(err)
 			return err
 		}
 		for _, v := range students {
@@ -259,8 +257,8 @@ func GetHandlers() *fiber.App {
 				LinkedLOs     []LinkedLOFormat `json:"linkedLOs"`
 			}
 			ResponseFormat struct {
-				QuizID    string           `json:"questionID"`
-				QuizName  string           `json:"questionTitle"`
+				QuizID    string           `json:"quizID"`
+				QuizName  string           `json:"quizName"`
 				Questions []QuestionFormat `json:"questions"`
 			}
 		)
@@ -330,9 +328,10 @@ func GetHandlers() *fiber.App {
 			QuizID     string `json:"quizID"`
 			QuestionID string `json:"questionID"`
 			LOID       string `json:"loID"`
-			Level      int    `json:"level,string"`
+			Level      int    `json:"level,int"`
 		}
 		if err := c.BodyParser(&request); err != nil {
+			fmt.Println(err)
 			return err
 		}
 		db.addLOLink(request.ProgramID, request.CourseID, request.QuizID, request.QuestionID, request.LOID, request.Level)

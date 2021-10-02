@@ -62,6 +62,6 @@ type QuestionResult struct {
 type QuestionExcel struct {
 	QuestionTitle string `json:"questionTitle"`
 	Maxscore      int    `json:"maxScore"`
-	StudentID     string `json:"studentID,string"`
+	StudentID     int    `json:"studentID"`
 	StudentScore  int    `json:"studentScore"`
 }
