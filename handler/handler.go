@@ -338,10 +338,75 @@ func GetHandlers() *fiber.App {
 		return c.SendStatus(fiber.StatusCreated)
 	})
 
-	app.Get("dashboard-plo", func(c *fiber.Ctx) error {
+	app.Get("dashboard-flat", func(c *fiber.Ctx) error {
 		programID, courseID := c.Query("programID"), c.Query("courseID")
-		// .....
-		return c.JSON([]string{programID, courseID})
+		type (
+			ResultFormat struct {
+				StudentID    string `json:"studentID"`
+				StudentScore int    `json:"studentScore"`
+			}
+			QuestionFormat struct {
+				QuestionTitle string         `json:"questionTitle"`
+				MaxScore      int            `json:"maxScore"`
+				LinkedPLOs    []string       `json:"linkedPLOs"`
+				LinkedLOs     []string       `json:"linkedLOs"`
+				Results       []ResultFormat `json:"results"`
+			}
+			ResponseFormat struct {
+				Student   map[string]string `json:"students"`
+				PLOs      map[string]string `json:"plos"`
+				LOs       map[string]string `json:"los"`
+				Questions []QuestionFormat  `json:"questions"`
+			}
+		)
+		response := ResponseFormat{
+			Student:   map[string]string{},
+			PLOs:      map[string]string{},
+			LOs:       map[string]string{},
+			Questions: []QuestionFormat{},
+		}
+		for _, quiz := range db.programs[programID].courses[courseID].quizzes {
+			for _, question := range quiz.questions {
+				plos := map[string]bool{}
+				los := map[string]bool{}
+				linkedLOs := []string{}
+				linkedPLOs := []string{}
+				results := []ResultFormat{}
+				for loID, level := range question.linkedloIDs {
+					if _, added := response.LOs[loID]; !added {
+						response.LOs[loID] = db.programs[programID].courses[courseID].los[loID].loTitle
+						for ploID := range db.programs[programID].courses[courseID].los[loID].linkedploIDs {
+							plos[ploID] = true
+							response.PLOs[ploID] = db.programs[programID].plos[ploID].ploName
+						}
+					}
+					if _, added := los[loID+","+strconv.Itoa(level)]; !added {
+						los[loID+","+strconv.Itoa(level)] = true
+						linkedLOs = append(linkedLOs, loID+","+strconv.Itoa(level))
+					}
+				}
+				for ploID := range plos {
+					linkedPLOs = append(linkedPLOs, ploID)
+				}
+				for _, student := range question.results {
+					results = append(results, ResultFormat{
+						StudentID:    student.studentID,
+						StudentScore: student.studentScore,
+					})
+				}
+				response.Questions = append(response.Questions, QuestionFormat{
+					QuestionTitle: question.questionTitle,
+					MaxScore:      question.maxScore,
+					LinkedPLOs:    linkedPLOs,
+					LinkedLOs:     linkedLOs,
+					Results:       results,
+				})
+			}
+		}
+		for studentID, student := range db.programs[programID].courses[courseID].students {
+			response.Student[studentID] = student.studentName
+		}
+		return c.JSON(response)
 	})
 
 	return app
