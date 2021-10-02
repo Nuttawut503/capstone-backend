@@ -1,13 +1,9 @@
 package handler
 
-import (
-	"strconv"
-
-	"github.com/google/uuid"
-)
+import "strconv"
 
 func (db *Database) createNewProgram(programName, programDescription string) {
-	db.programs[uuid.New().String()] = Program{
+	db.programs[randomID()] = Program{
 		programName:        programName,
 		programDescription: programDescription,
 		courses:            map[string]Course{},
@@ -16,14 +12,14 @@ func (db *Database) createNewProgram(programName, programDescription string) {
 }
 
 func (db *Database) createNewPLO(programID, ploName, ploDescription string) {
-	db.programs[programID].plos[uuid.New().String()] = PLO{
+	db.programs[programID].plos[randomID()] = PLO{
 		ploName:        ploName,
 		ploDescription: ploDescription,
 	}
 }
 
 func (db *Database) createNewCourse(programID, courseName string, semester, year int) {
-	db.programs[programID].courses[uuid.New().String()] = Course{
+	db.programs[programID].courses[randomID()] = Course{
 		courseName: courseName,
 		semester:   semester,
 		year:       year,
@@ -42,7 +38,7 @@ func (db *Database) addNewStudent(programID, courseID, studentID, studentEmail, 
 }
 
 func (db *Database) addNewLO(programID, courseID, loTitle string, initLevel int, description string) {
-	db.programs[programID].courses[courseID].los[uuid.New().String()] = LO{
+	db.programs[programID].courses[courseID].los[randomID()] = LO{
 		loTitle:      loTitle,
 		levels:       []LOLevel{{level: initLevel, levelDescription: description}},
 		linkedploIDs: map[string]bool{},
@@ -64,7 +60,7 @@ func (db *Database) addPLOLink(programID, courseID, ploID, loID string) {
 }
 
 func (db *Database) addQuiz(programID, courseID, quizName string) {
-	db.programs[programID].courses[courseID].quizzes[uuid.New().String()] = Quiz{
+	db.programs[programID].courses[courseID].quizzes[randomID()] = Quiz{
 		quizName:  quizName,
 		questions: map[string]Question{},
 	}
@@ -77,7 +73,7 @@ func (db *Database) addNewQuestion(programID, courseID, quizID string, questionE
 	for _, v := range questionExcel {
 		id, added := questionIDs[v.QuestionTitle]
 		if !added {
-			id = uuid.New().String()
+			id = randomID()
 			questionIDs[v.QuestionTitle] = id
 			questionMaxScores[id] = v.Maxscore
 			questionMapResults[id] = []QuestionResult{}

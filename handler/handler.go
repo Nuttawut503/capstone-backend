@@ -13,7 +13,7 @@ func GetHandlers() *fiber.App {
 	app := fiber.New()
 
 	db := Database{
-		programs: map[string]Program{},
+		programs: mockupProgram(),
 	}
 
 	app.Get("/programs", func(c *fiber.Ctx) error {
@@ -336,6 +336,12 @@ func GetHandlers() *fiber.App {
 		}
 		db.addLOLink(request.ProgramID, request.CourseID, request.QuizID, request.QuestionID, request.LOID, request.Level)
 		return c.SendStatus(fiber.StatusCreated)
+	})
+
+	app.Get("dashboard-plo", func(c *fiber.Ctx) error {
+		programID, courseID := c.Query("programID"), c.Query("courseID")
+		// .....
+		return c.JSON([]string{programID, courseID})
 	})
 
 	return app
