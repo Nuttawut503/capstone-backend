@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -29,6 +30,19 @@ func GetHandlers() *fiber.App {
 				ProgramName:        v.programName,
 				ProgramDescription: v.programDescription,
 			})
+		}
+		return c.JSON(response)
+	})
+
+	app.Get("/program-name", func(c *fiber.Ctx) error {
+		programID := c.Query("programID")
+		if _, ok := db.programs[programID]; !ok {
+			return errors.New("wrong id")
+		}
+		response := struct {
+			ProgramName string `json:"programName"`
+		}{
+			ProgramName: db.programs[programID].programName,
 		}
 		return c.JSON(response)
 	})
@@ -61,6 +75,22 @@ func GetHandlers() *fiber.App {
 				Semester:   v.semester,
 				Year:       v.year,
 			})
+		}
+		return c.JSON(response)
+	})
+
+	app.Get("/course-name", func(c *fiber.Ctx) error {
+		programID, courseID := c.Query("programID"), c.Query("courseID")
+		if _, ok := db.programs[programID]; !ok {
+			return errors.New("wrong id")
+		}
+		if _, ok := db.programs[programID].courses[courseID]; !ok {
+			return errors.New("wrong id")
+		}
+		response := struct {
+			CourseName string `json:"courseName"`
+		}{
+			CourseName: db.programs[programID].courses[courseID].courseName,
 		}
 		return c.JSON(response)
 	})
