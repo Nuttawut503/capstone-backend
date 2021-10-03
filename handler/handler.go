@@ -230,31 +230,41 @@ func GetHandlers() *fiber.App {
 
 	app.Post("/lo", func(c *fiber.Ctx) error {
 		var request struct {
-			ProgramID   string `json:"programID"`
-			CourseID    string `json:"courseID"`
-			LOTitle     string `json:"loTitle"`
-			InitLevel   int    `json:"initLevel,string"`
-			Description string `json:"description"`
+			ProgramID   string      `json:"programID"`
+			CourseID    string      `json:"courseID"`
+			LOTitle     string      `json:"loTitle"`
+			InitLevel   json.Number `json:"initLevel"`
+			Description string      `json:"description"`
 		}
 		if err := c.BodyParser(&request); err != nil {
+			fmt.Println(err)
 			return err
 		}
-		db.addNewLO(request.ProgramID, request.CourseID, request.LOTitle, request.InitLevel, request.Description)
+		if initLevel, err := request.InitLevel.Int64(); err != nil {
+			return err
+		} else {
+			db.addNewLO(request.ProgramID, request.CourseID, request.LOTitle, int(initLevel), request.Description)
+		}
 		return c.SendStatus(fiber.StatusCreated)
 	})
 
 	app.Post("/lolevel", func(c *fiber.Ctx) error {
 		var request struct {
-			ProgramID   string `json:"programID"`
-			CourseID    string `json:"courseID"`
-			LOID        string `json:"loID"`
-			Level       int    `json:"level,string"`
-			Description string `json:"description"`
+			ProgramID   string      `json:"programID"`
+			CourseID    string      `json:"courseID"`
+			LOID        string      `json:"loID"`
+			Level       json.Number `json:"level"`
+			Description string      `json:"description"`
 		}
 		if err := c.BodyParser(&request); err != nil {
+			fmt.Println(err)
 			return err
 		}
-		db.addNewLOLevel(request.ProgramID, request.CourseID, request.LOID, request.Level, request.Description)
+		if level, err := request.Level.Int64(); err != nil {
+			return err
+		} else {
+			db.addNewLOLevel(request.ProgramID, request.CourseID, request.LOID, int(level), request.Description)
+		}
 		return c.SendStatus(fiber.StatusCreated)
 	})
 
