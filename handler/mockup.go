@@ -29,15 +29,15 @@ func mockup209LO() map[string]LO {
 			levels: []LOLevel{
 				{
 					level:            1,
-					levelDescription: "Describe basic of data structures",
+					levelDescription: "LO1 Level1 Describe basic of data structures",
 				},
 				{
 					level:            2,
-					levelDescription: "Describe basic of the relevant algorithms",
+					levelDescription: "LO1 Level2 Describe basic of the relevant algorithms",
 				},
 				{
 					level:            3,
-					levelDescription: "Discuss how data structures are related to its algorithms",
+					levelDescription: "LO1 Level3 Discuss how data structures are related to its algorithms",
 				},
 			},
 		},
@@ -47,11 +47,11 @@ func mockup209LO() map[string]LO {
 			levels: []LOLevel{
 				{
 					level:            1,
-					levelDescription: "Describe the basic of built-in data structures",
+					levelDescription: "LO2 Level1 Describe the basic of built-in data structures",
 				},
 				{
 					level:            2,
-					levelDescription: "Discuss what is the best use of built-in data structures",
+					levelDescription: "LO2 Level2 Discuss what is the best use of built-in data structures",
 				},
 			},
 		},
@@ -66,7 +66,7 @@ func mockup102LO() map[string]LO {
 			levels: []LOLevel{
 				{
 					level:            1,
-					levelDescription: "Able to tell how to solved the problem",
+					levelDescription: "LO1 Level1 Able to tell how to solved the problem",
 				},
 			},
 		},
@@ -76,15 +76,15 @@ func mockup102LO() map[string]LO {
 			levels: []LOLevel{
 				{
 					level:            1,
-					levelDescription: "Create algorithm with Python",
+					levelDescription: "LO2 Level1 Create algorithm with Python",
 				},
 				{
 					level:            2,
-					levelDescription: "Create algorithm with Java",
+					levelDescription: "LO2 Level2 Create algorithm with Java",
 				},
 				{
 					level:            3,
-					levelDescription: "Able to improve create algorithms",
+					levelDescription: "LO2 Level3 Able to improve create algorithms",
 				},
 			},
 		},
