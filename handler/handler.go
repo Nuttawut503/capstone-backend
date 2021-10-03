@@ -403,13 +403,13 @@ func GetHandlers() *fiber.App {
 				linkedPLOs := []string{}
 				results := []ResultFormat{}
 				for loID, level := range question.linkedloIDs {
-					if _, added := response.LOs[loID]; !added {
-						response.LOs[loID] = db.programs[programID].courses[courseID].los[loID].loTitle
-						for ploID := range db.programs[programID].courses[courseID].los[loID].linkedploIDs {
-							plos[ploID] = true
-							response.PLOs[ploID] = db.programs[programID].plos[ploID].ploName
-						}
+					response.LOs[loID] = db.programs[programID].courses[courseID].los[loID].loTitle
+
+					for ploID := range db.programs[programID].courses[courseID].los[loID].linkedploIDs {
+						plos[ploID] = true
+						response.PLOs[ploID] = db.programs[programID].plos[ploID].ploName
 					}
+
 					if _, added := los[loID+","+strconv.Itoa(level)]; !added {
 						los[loID+","+strconv.Itoa(level)] = true
 						response.LOs[loID+","+strconv.Itoa(level)] = db.programs[programID].courses[courseID].los[loID].levels[level-1].levelDescription
@@ -436,6 +436,55 @@ func GetHandlers() *fiber.App {
 		}
 		for studentID, student := range db.programs[programID].courses[courseID].students {
 			response.Student[studentID] = student.studentName
+		}
+		return c.JSON(response)
+	})
+
+	app.Get("dashboard-result", func(c *fiber.Ctx) error {
+		programID, courseID := c.Query("programID"), c.Query("courseID")
+		type (
+			ResultFormat struct {
+				StudentID    string `json:"studentID"`
+				StudentName  string `json:"studentName"`
+				StudentScore int    `json:"studentScore"`
+			}
+			ResponseFormat struct {
+				QuizName string         `json:"quizName"`
+				MaxScore int            `json:"maxScore"`
+				Results  []ResultFormat `json:"results"`
+			}
+		)
+		response := make([]ResponseFormat, 0)
+		for _, quiz := range db.programs[programID].courses[courseID].quizzes {
+			maxScore := 0
+			studentScore := map[string]int{}
+			for _, question := range quiz.questions {
+				maxScore += question.maxScore
+				for _, result := range question.results {
+					if _, added := studentScore[result.studentID]; !added {
+						studentScore[result.studentID] = result.studentScore
+					} else {
+						studentScore[result.studentID] += result.studentScore
+					}
+				}
+			}
+			result := make([]ResultFormat, 0)
+			for studentID, score := range studentScore {
+				studentName := "None"
+				if student, ok := db.programs[programID].courses[courseID].students[studentID]; ok {
+					studentName = student.studentName
+				}
+				result = append(result, ResultFormat{
+					StudentID:    studentID,
+					StudentName:  studentName,
+					StudentScore: score,
+				})
+			}
+			response = append(response, ResponseFormat{
+				QuizName: quiz.quizName,
+				MaxScore: maxScore,
+				Results:  result,
+			})
 		}
 		return c.JSON(response)
 	})
