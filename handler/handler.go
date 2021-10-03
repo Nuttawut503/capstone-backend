@@ -489,5 +489,28 @@ func GetHandlers() *fiber.App {
 		return c.JSON(response)
 	})
 
+	app.Get("dashboard-plosummary", func(c *fiber.Ctx) error {
+		programID, courseID := c.Query("programID"), c.Query("courseID")
+		response := map[string][]string{}
+		plos := map[string]map[string]bool{}
+		for loID, lo := range db.programs[programID].courses[courseID].los {
+			for ploID := range lo.linkedploIDs {
+				if _, added := plos[ploID]; !added {
+					plos[ploID] = map[string]bool{}
+				}
+				plos[ploID][loID] = true
+			}
+		}
+		for ploID, lo := range plos {
+			for loID := range lo {
+				if _, ok := response[ploID]; !ok {
+					response[ploID] = make([]string, 0)
+				}
+				response[ploID] = append(response[ploID], loID)
+			}
+		}
+		return c.JSON(response)
+	})
+
 	return app
 }
