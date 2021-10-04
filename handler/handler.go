@@ -95,17 +95,34 @@ func GetHandlers() *fiber.App {
 		return c.JSON(response)
 	})
 
+	app.Get("/course-description", func(c *fiber.Ctx) error {
+		programID, courseID := c.Query("programID"), c.Query("courseID")
+		if _, ok := db.programs[programID]; !ok {
+			return errors.New("wrong id")
+		}
+		if _, ok := db.programs[programID].courses[courseID]; !ok {
+			return errors.New("wrong id")
+		}
+		response := struct {
+			CourseDescription string `json:"courseDescription"`
+		}{
+			CourseDescription: db.programs[programID].courses[courseID].courseDescription,
+		}
+		return c.JSON(response)
+	})
+
 	app.Post("/course", func(c *fiber.Ctx) error {
 		var request struct {
-			ProgramID  string `json:"programID"`
-			CourseName string `json:"courseName"`
-			Semester   int    `json:"semester,string"`
-			Year       int    `json:"year,string"`
+			ProgramID         string `json:"programID"`
+			CourseName        string `json:"courseName"`
+			CourseDescription string `json:"courseDescription"`
+			Semester          int    `json:"semester,string"`
+			Year              int    `json:"year,string"`
 		}
 		if err := c.BodyParser(&request); err != nil {
 			return err
 		}
-		db.createNewCourse(request.ProgramID, request.CourseName, request.Semester, request.Year)
+		db.createNewCourse(request.ProgramID, request.CourseName, request.CourseDescription, request.Semester, request.Year)
 		return c.SendStatus(fiber.StatusCreated)
 	})
 

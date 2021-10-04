@@ -95,19 +95,25 @@ func mockupCourse() map[string]Course {
 	return map[string]Course{
 		randomID(): {
 			courseName: "CSC209 Data Structures",
-			semester:   2,
-			year:       2021,
-			students:   map[string]Student{},
-			quizzes:    map[string]Quiz{},
-			los:        mockup209LO(),
+			courseDescription: "Abstract data type in Java, pointer and vector in Java, running time and complexity, linked-lists," +
+				" stacks, queues, trees, recursion, numerical case studies, trees, graph, binary heap, tree algorithms, sorting case studies," +
+				" hash table, data compression, string matching, event-driven programming.",
+			semester: 2,
+			year:     2021,
+			students: map[string]Student{},
+			quizzes:  map[string]Quiz{},
+			los:      mockup209LO(),
 		},
 		randomID(): {
 			courseName: "CSC102 Intro to Programming",
-			semester:   1,
-			year:       2021,
-			students:   map[string]Student{},
-			quizzes:    map[string]Quiz{},
-			los:        mockup102LO(),
+			courseDescription: "Fundamental concepts of programming, basic computation, simple I/O, standard conditional and" +
+				" iterative structures, the definition of functions, and parameter passing, arrays, programming style and documentation, " +
+				"program testing and debugging, basic algorithms and sorting, basic type systems, fundamental object-oriented programming.",
+			semester: 1,
+			year:     2021,
+			students: map[string]Student{},
+			quizzes:  map[string]Quiz{},
+			los:      mockup102LO(),
 		},
 	}
 }

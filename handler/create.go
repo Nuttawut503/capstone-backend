@@ -18,14 +18,15 @@ func (db *Database) createNewPLO(programID, ploName, ploDescription string) {
 	}
 }
 
-func (db *Database) createNewCourse(programID, courseName string, semester, year int) {
+func (db *Database) createNewCourse(programID, courseName, courseDescription string, semester, year int) {
 	db.programs[programID].courses[randomID()] = Course{
-		courseName: courseName,
-		semester:   semester,
-		year:       year,
-		students:   map[string]Student{},
-		los:        map[string]LO{},
-		quizzes:    map[string]Quiz{},
+		courseName:        courseName,
+		courseDescription: courseDescription,
+		semester:          semester,
+		year:              year,
+		students:          map[string]Student{},
+		los:               map[string]LO{},
+		quizzes:           map[string]Quiz{},
 	}
 }
 

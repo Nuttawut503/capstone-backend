@@ -17,12 +17,13 @@ type PLO struct {
 }
 
 type Course struct {
-	courseName string
-	semester   int
-	year       int
-	students   map[string]Student
-	los        map[string]LO
-	quizzes    map[string]Quiz
+	courseName        string
+	courseDescription string
+	semester          int
+	year              int
+	students          map[string]Student
+	los               map[string]LO
+	quizzes           map[string]Quiz
 }
 
 type Student struct {
