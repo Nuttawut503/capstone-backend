@@ -343,6 +343,47 @@ func GetHandlers() *fiber.App {
 		return c.SendStatus(fiber.StatusCreated)
 	})
 
+	app.Post("quiz-upload", func(c *fiber.Ctx) error {
+		type QuizExcelFormat struct {
+			QuestionTitle string      `json:"questionTitle"`
+			Maxscore      json.Number `json:"maxScore"`
+			StudentID     json.Number `json:"studentID"`
+			StudentScore  json.Number `json:"studentScore"`
+		}
+		var request struct {
+			ProgramID string            `json:"programID"`
+			CourseID  string            `json:"courseID"`
+			QuizName  string            `json:"quizName"`
+			Questions []QuizExcelFormat `json:"questions"`
+		}
+		if err := c.BodyParser(&request); err != nil {
+			return err
+		}
+		newQuestions := make([]QuestionExcel, 0)
+		for _, question := range request.Questions {
+			var maxScore, studentID, studentScore int64
+			var err error
+			if maxScore, err = question.Maxscore.Int64(); err != nil {
+				return err
+			}
+			if studentID, err = question.StudentID.Int64(); err != nil {
+				return err
+			}
+			if studentScore, err = question.StudentScore.Int64(); err != nil {
+				return err
+			}
+			newQuestions = append(newQuestions, QuestionExcel{
+				QuestionTitle: question.QuestionTitle,
+				Maxscore:      int(maxScore),
+				StudentID:     int(studentID),
+				StudentScore:  int(studentScore),
+			})
+		}
+		quizID := db.addQuiz(request.ProgramID, request.CourseID, request.QuizName)
+		db.addNewQuestion(request.ProgramID, request.CourseID, quizID, newQuestions)
+		return c.SendStatus(fiber.StatusCreated)
+	})
+
 	app.Post("questions", func(c *fiber.Ctx) error {
 		var request struct {
 			ProgramID string `json:"programID"`
@@ -368,13 +409,18 @@ func GetHandlers() *fiber.App {
 			QuizID     string `json:"quizID"`
 			QuestionID string `json:"questionID"`
 			LOID       string `json:"loID"`
-			Level      int    `json:"level,int"`
+			Level      string `json:"level"`
 		}
 		if err := c.BodyParser(&request); err != nil {
-			fmt.Println(err)
 			return err
 		}
-		db.addLOLink(request.ProgramID, request.CourseID, request.QuizID, request.QuestionID, request.LOID, request.Level)
+		loLevel := 0
+		if level, err := strconv.Atoi(request.Level); err != nil {
+			return err
+		} else {
+			loLevel = level
+		}
+		db.addLOLink(request.ProgramID, request.CourseID, request.QuizID, request.QuestionID, request.LOID, loLevel)
 		return c.SendStatus(fiber.StatusCreated)
 	})
 

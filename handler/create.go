@@ -59,11 +59,13 @@ func (db *Database) addPLOLink(programID, courseID, ploID, loID string) {
 	db.programs[programID].courses[courseID].los[loID].linkedploIDs[ploID] = true
 }
 
-func (db *Database) addQuiz(programID, courseID, quizName string) {
-	db.programs[programID].courses[courseID].quizzes[randomID()] = Quiz{
+func (db *Database) addQuiz(programID, courseID, quizName string) string {
+	id := randomID()
+	db.programs[programID].courses[courseID].quizzes[id] = Quiz{
 		quizName:  quizName,
 		questions: map[string]Question{},
 	}
+	return id
 }
 
 func (db *Database) addNewQuestion(programID, courseID, quizID string, questionExcel []QuestionExcel) {
