@@ -289,7 +289,7 @@ func GetHandlers() *fiber.App {
 		var request struct {
 			ProgramID string `json:"programID"`
 			CourseID  string `json:"courseID"`
-			PLOID     string `json:"PLOID"`
+			PLOID     string `json:"ploID"`
 			LOID      string `json:"loID"`
 		}
 		if err := c.BodyParser(&request); err != nil {
@@ -297,6 +297,20 @@ func GetHandlers() *fiber.App {
 		}
 		db.addPLOLink(request.ProgramID, request.CourseID, request.PLOID, request.LOID)
 		return c.SendStatus(fiber.StatusCreated)
+	})
+
+	app.Delete("plolink", func(c *fiber.Ctx) error {
+		var request struct {
+			ProgramID string `json:"programID"`
+			CourseID  string `json:"courseID"`
+			PLOID     string `json:"ploID"`
+			LOID      string `json:"loID"`
+		}
+		if err := c.BodyParser(&request); err != nil {
+			return err
+		}
+		delete(db.programs[request.ProgramID].courses[request.CourseID].los[request.LOID].linkedploIDs, request.PLOID)
+		return c.SendStatus(fiber.StatusOK)
 	})
 
 	app.Get("quizzes", func(c *fiber.Ctx) error {
@@ -358,6 +372,19 @@ func GetHandlers() *fiber.App {
 		}
 		db.addQuiz(request.ProgramID, request.CourseID, request.QuizName)
 		return c.SendStatus(fiber.StatusCreated)
+	})
+
+	app.Delete("quiz", func(c *fiber.Ctx) error {
+		var request struct {
+			ProgramID string `json:"programID"`
+			CourseID  string `json:"courseID"`
+			QuizID    string `json:"quizID"`
+		}
+		if err := c.BodyParser(&request); err != nil {
+			return err
+		}
+		delete(db.programs[request.ProgramID].courses[request.CourseID].quizzes, request.QuizID)
+		return c.SendStatus(fiber.StatusOK)
 	})
 
 	app.Post("quiz-upload", func(c *fiber.Ctx) error {
@@ -439,6 +466,21 @@ func GetHandlers() *fiber.App {
 		}
 		db.addLOLink(request.ProgramID, request.CourseID, request.QuizID, request.QuestionID, request.LOID, loLevel)
 		return c.SendStatus(fiber.StatusCreated)
+	})
+
+	app.Delete("questionlink", func(c *fiber.Ctx) error {
+		var request struct {
+			ProgramID  string `json:"programID"`
+			CourseID   string `json:"courseID"`
+			QuizID     string `json:"quizID"`
+			QuestionID string `json:"questionID"`
+			LOID       string `json:"loID"`
+		}
+		if err := c.BodyParser(&request); err != nil {
+			return err
+		}
+		delete(db.programs[request.ProgramID].courses[request.CourseID].quizzes[request.QuizID].questions[request.QuestionID].linkedloIDs, request.LOID)
+		return c.SendStatus(fiber.StatusOK)
 	})
 
 	app.Get("dashboard-flat", func(c *fiber.Ctx) error {
