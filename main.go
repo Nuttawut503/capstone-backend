@@ -1,22 +1,26 @@
 package main
 
 import (
-	"backend/handler"
+	"github.com/spf13/viper"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/Nuttawut503/capstone-backend/db"
 )
 
 func main() {
+	viper.SetConfigFile(".env")
+	if err := viper.ReadInConfig(); err != nil {
+		panic(err)
+	}
 
-	app := fiber.New()
-	app.Use(cors.New())
+	client := db.NewClient()
+	if err := client.Prisma.Connect(); err != nil {
+		panic(err)
+	}
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello World!")
-	})
+	defer func() {
+		if err := client.Prisma.Disconnect(); err != nil {
+			panic(err)
+		}
+	}()
 
-	app.Mount("/api", handler.GetHandlers())
-
-	app.Listen(":5000")
 }
