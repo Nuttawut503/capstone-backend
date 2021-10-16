@@ -8,21 +8,25 @@ Used libraries
 - viper (a complete configuration solution)
 
 How to run the project (read carefully)
-1. Copy `.env.example` file then rename the copied to `.env`
-2. Install postgresql and redis via docker (Skip if you already have)
+1. Clone the project to your machine
 ```console
-user@machine:~/capstone-backend$ chmod +x docker_setup.sh && ./docker_setup.sh
+git clone https://github.com/Nuttawut503/capstone-backend && cd capstone-backend
 ```
-3. Edit `.env` file to match your machine environment (Skip if you didn't run the above command)
-4. Install required dependencies in the project
+2. Copy `.env.example` file then rename the copied to `.env`
+3. Install postgresql and redis via docker (Skip if you already have)
 ```console
-user@machine:~/capstone-backend$ go install
+chmod +x docker_setup.sh && ./docker_setup.sh
 ```
-5. Migrate your database
+4. Edit `.env` file to match your machine environment (Skip if you didn't run the above command)
+5. Install required dependencies in the project
 ```console
-user@machine:~/capstone-backend$ go run github.com/prisma/prisma-client-go migrate dev
+go install
 ```
-6. Start the project
+6. Migrate your database
 ```console
-user@machine:~/capstone-backend$ go run .
+go run github.com/prisma/prisma-client-go migrate dev
+```
+7. Start the project
+```console
+go run .
 ```
