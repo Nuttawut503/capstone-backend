@@ -7,3 +7,8 @@ docker run -d \
   -v "$(pwd)"/data:/var/lib/postgresql/data \
   -p 5432:5432 \
   postgres
+
+docker run -d \
+  --name rdb \
+  -p 6379:6379 \
+  redis
