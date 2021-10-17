@@ -5,6 +5,8 @@ go 1.17
 require (
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-redis/redis/v8 v8.11.4
+	github.com/golang-jwt/jwt/v4 v4.1.0
+	github.com/google/uuid v1.1.2
 	github.com/iancoleman/strcase v0.2.0
 	github.com/joho/godotenv v1.3.0
 	github.com/prisma/prisma-client-go v0.11.0
