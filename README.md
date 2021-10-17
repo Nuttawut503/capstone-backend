@@ -5,9 +5,10 @@ This project is written in GO
 | Name | Description |
 | ---- | ------------ |
 | [gin](https://github.com/gin-gonic/gin) | a HTTP web framework |
-| [go-redis](https://github.com/go-redis/redis) | type-safe Redis client |
+| [go-redis](https://github.com/go-redis/redis) | a type-safe Redis client |
 | [gqlgen](https://github.com/99designs/gqlgen) | a library for building GraphQL servers |
-| [jwt-go](https://github.com/dgrijalva/jwt-go) | an implementation of JSON Web Tokens |
+| [golang-jwt](https://github.com/golang-jwt/jwt) | an implementation of JSON Web Tokens |
+| [google-uuid](https://github.com/google/uuid) | a uuid generator |
 | [prisma-client-go](https://github.com/prisma/prisma-client-go) | an auto-generated and fully type-safe database client |
 | [viper](https://github.com/spf13/viper) | a complete configuration solution |
 
