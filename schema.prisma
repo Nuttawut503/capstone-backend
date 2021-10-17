@@ -7,20 +7,26 @@ generator db {
   provider = "go run github.com/prisma/prisma-client-go"
 }
 
-enum Role {
-  STUDENT
-  TEACHER
-  LEADER
-}
-
 model User {
   id      String @id @db.VarChar(11)
   email   String
   name    String
   surname String
-  role    Role   @default(STUDENT)
 
-  questionResults Question_result[]
+  students Student[]
+  teachers Teacher[]
+}
+
+model Student {
+  user User   @relation(fields: [id], references: [id], onDelete: Cascade)
+  id   String @id @db.VarChar(11)
+
+  questionResults QuestionResult[]
+}
+
+model Teacher {
+  user User   @relation(fields: [id], references: [id], onDelete: Cascade)
+  id   String @id @db.VarChar(11)
 }
 
 model Program {
@@ -28,28 +34,28 @@ model Program {
   name        String @unique
   description String
 
-  plans   Plo_plan[]
-  courses Course[]
+  ploGroups PLOgroup[]
+  courses   Course[]
 }
 
-model Plo_plan {
+model PLOgroup {
   id        String  @id @default(uuid())
   name      String
   program   Program @relation(fields: [programID], references: [id], onDelete: Cascade)
   programID String
 
-  infos   Plo_info[]
+  plos    PLO[]
   courses Course[]
 }
 
-model Plo_info {
+model PLO {
   id          String   @id @default(uuid())
-  name        String
+  title       String
   description String
-  plo_plan    Plo_plan @relation(fields: [planID], references: [id], onDelete: Cascade)
-  planID      String
+  ploGroup    PLOgroup @relation(fields: [ploGroupID], references: [id], onDelete: Cascade)
+  ploGroupID  String
 
-  los Lo_link[]
+  links LOlink[]
 }
 
 model Course {
@@ -60,39 +66,38 @@ model Course {
   year        Int
   program     Program  @relation(fields: [programID], references: [id], onDelete: Cascade)
   programID   String
-  plo_plan    Plo_plan @relation(fields: [planID], references: [id], onDelete: SetNull)
-  planID      String
+  ploGroup    PLOgroup @relation(fields: [ploGroupID], references: [id], onDelete: SetNull)
+  ploGroupID  String
 
-  los     Lo[]
+  los     LO[]
   quizzes Quiz[]
 }
 
-model Lo {
+model LO {
   id       String @id @default(uuid())
   title    String
   course   Course @relation(fields: [courseID], references: [id], onDelete: Cascade)
   courseID String
 
-  levels Lo_level[]
-  links  Lo_link[]
+  levels LOlevel[]
+  links  LOlink[]
 }
 
-model Lo_level {
+model LOlevel {
   level       Int
   description String
-  lo          Lo     @relation(fields: [loID], references: [id], onDelete: Cascade)
+  lo          LO     @relation(fields: [loID], references: [id], onDelete: Cascade)
   loID        String
 
-
-  questionLinks Question_link[]
+  questionLinks QuestionLink[]
   @@id([loID, level])
 }
 
-model Lo_link {
-  lo       Lo       @relation(fields: [loID], references: [id], onDelete: Cascade)
-  loID     String
-  plo_info Plo_info @relation(fields: [ploID], references: [id], onDelete: Cascade)
-  ploID    String
+model LOlink {
+  lo    LO     @relation(fields: [loID], references: [id], onDelete: Cascade)
+  loID  String
+  plo   PLO    @relation(fields: [ploID], references: [id], onDelete: Cascade)
+  ploID String
 
   @@id([loID, ploID])
 }
@@ -114,24 +119,24 @@ model Question {
   quiz     Quiz   @relation(fields: [quizID], references: [id], onDelete: Cascade)
   quizID   String
 
-  results Question_result[]
-  links   Question_link[]
+  results QuestionResult[]
+  links   QuestionLink[]
 }
 
-model Question_result {
+model QuestionResult {
   question   Question @relation(fields: [questionID], references: [id], onDelete: Cascade)
   questionID String
-  student    User     @relation(fields: [studentID], references: [id], onDelete: Cascade)
+  student    Student  @relation(fields: [studentID], references: [id], onDelete: Cascade)
   studentID  String   @db.VarChar(11)
   score      Int
 
   @@id([questionID, studentID])
 }
 
-model Question_link {
+model QuestionLink {
   question   Question @relation(fields: [questionID], references: [id], onDelete: Cascade)
   questionID String
-  loLevel    Lo_level @relation(fields: [loID, level], references: [loID, level], onDelete: Cascade)
+  loLevel    LOlevel  @relation(fields: [loID, level], references: [loID, level], onDelete: Cascade)
   loID       String
   level      Int
 

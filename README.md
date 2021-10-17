@@ -1,13 +1,17 @@
-## This project is written in GO
+# capstone-backend
+This project is written in GO
 
-Used libraries
-- gin (a HTTP web framework)
-- go-redis (Type-safe Redis client)
-- gqlgen (a library for building GraphQL servers)
-- prisma-client-go (an auto-generated and fully type-safe database client)
-- viper (a complete configuration solution)
+## Used libraries
+| Name | Description |
+| ---- | ------------ |
+| [gin](https://github.com/gin-gonic/gin) | a HTTP web framework |
+| [go-redis](https://github.com/go-redis/redis) | type-safe Redis client |
+| [gqlgen](https://github.com/99designs/gqlgen) | a library for building GraphQL servers |
+| [jwt-go](https://github.com/dgrijalva/jwt-go) | an implementation of JSON Web Tokens |
+| [prisma-client-go](https://github.com/prisma/prisma-client-go) | an auto-generated and fully type-safe database client |
+| [viper](https://github.com/spf13/viper) | a complete configuration solution |
 
-How to run the project (read carefully)
+## How to run the project
 1. Clone the project to your machine
 ```console
 git clone https://github.com/Nuttawut503/capstone-backend && cd capstone-backend
