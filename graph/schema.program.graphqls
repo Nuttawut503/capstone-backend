@@ -1,0 +1,43 @@
+type Program {
+  id: ID!
+  name: String!
+  description: String!
+}
+
+type PLOGroup {
+  id: ID!
+  name: String!
+}
+
+type PLO {
+  id: ID!
+  title: String!
+  description: String!
+}
+
+extend type Query {
+  programs: [Program!]!
+  ploGroups(programID: String!): [PLOGroup!]!
+  plos(ploGroupID: String!): [PLO!]!
+}
+
+input CreateProgramInput {
+  name: String!
+  description: String!
+}
+
+input CreatePLOGroupInput {
+  programID: String!
+  name: String!
+  plos: [CreatePLOsInput!]!
+}
+
+input CreatePLOsInput {
+  title: String!
+  description: String!
+}
+
+extend type Mutation {
+  createProgram(input: CreateProgramInput!): Program!
+  createPLOGroupInput(input: CreatePLOGroupInput!): PLOGroup!
+}

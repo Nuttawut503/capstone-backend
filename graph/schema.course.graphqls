@@ -1,0 +1,55 @@
+# https://gqlgen.com/getting-started/
+
+type Course {
+  id: ID!
+  name: String!
+  description: String!
+  semester: Int!
+  year: Int!
+  ploGroupID: String!
+}
+
+type LO {
+  id: ID!
+  title: String!
+  levels: [LOlevel!]!
+  ploLinks: [PLO!]!
+}
+
+type LOlevel {
+  level: Int!
+  description: Int!
+}
+
+type Query {
+  courses(programID: String!): [Course!]!
+  course(courseID: String!): Course!
+  los(courseID: String!): [LO!]!
+}
+
+input CreateCourseInput {
+  programID: String!
+  name: String!
+  semester: Int!
+  year: Int!
+}
+
+input CreateLOSetInput {
+  courseID: String!
+  los: [CreateLOsInput!]!
+}
+
+input CreateLOsInput {
+  title: String!
+  levels: [CreateLOlevelsInput!]!
+}
+
+input CreateLOlevelsInput {
+  level: Int!
+  description: String!
+}
+
+type Mutation {
+  createCourse(input: CreateCourseInput!): Course!
+  createLOs(input: CreateLOSetInput!): [String!]!
+}

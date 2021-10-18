@@ -1,0 +1,59 @@
+scalar Time
+
+type Quiz {
+  id: ID!
+  name: String!
+  createdAt: Time!
+  questions: [Question!]!
+}
+
+type Question {
+  id: ID!
+  title: String!
+  maxScore: Int!
+  results: [QuestionResult!]!
+  loLinks: [QuestionLink!]!
+}
+
+type QuestionResult {
+  studentID: String!
+  score: Int!
+}
+
+type QuestionLink {
+  loID: String!
+  level: String!
+}
+
+extend type Query {
+  quiz(courseID: String!): [Quiz!]!
+}
+
+input CreateQuizInput {
+  courseID: String!
+  name: String!
+  createdAt: Time!
+  questions: [CreateQuestionInput!]!
+}
+
+input CreateQuestionInput {
+  title: String!
+  maxScore: Int!
+  results: [CreateQuestionResultInput!]!
+}
+
+input CreateQuestionResultInput {
+  studentID: String!
+  score: Int!
+}
+
+input CreateQuestionLinkInput {
+  questionID: String!
+  loID: String!
+  level: Int!
+}
+
+extend type Mutation {
+  createQuiz(input: CreateQuizInput): String!
+  createQuestionLink(input: CreateQuestionLinkInput): Boolean!
+}

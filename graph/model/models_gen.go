@@ -2,19 +2,131 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"time"
+)
+
+type Course struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Semester    int    `json:"semester"`
+	Year        int    `json:"year"`
+	PloGroupID  string `json:"ploGroupID"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type CreateCourseInput struct {
+	ProgramID string `json:"programID"`
+	Name      string `json:"name"`
+	Semester  int    `json:"semester"`
+	Year      int    `json:"year"`
 }
 
-type User struct {
+type CreateLOSetInput struct {
+	CourseID string            `json:"courseID"`
+	Los      []*CreateLOsInput `json:"los"`
+}
+
+type CreateLOlevelsInput struct {
+	Level       int    `json:"level"`
+	Description string `json:"description"`
+}
+
+type CreateLOsInput struct {
+	Title  string                 `json:"title"`
+	Levels []*CreateLOlevelsInput `json:"levels"`
+}
+
+type CreatePLOGroupInput struct {
+	ProgramID string             `json:"programID"`
+	Name      string             `json:"name"`
+	Plos      []*CreatePLOsInput `json:"plos"`
+}
+
+type CreatePLOsInput struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+type CreateProgramInput struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type CreateQuestionInput struct {
+	Title    string                       `json:"title"`
+	MaxScore int                          `json:"maxScore"`
+	Results  []*CreateQuestionResultInput `json:"results"`
+}
+
+type CreateQuestionLinkInput struct {
+	QuestionID string `json:"questionID"`
+	LoID       string `json:"loID"`
+	Level      int    `json:"level"`
+}
+
+type CreateQuestionResultInput struct {
+	StudentID string `json:"studentID"`
+	Score     int    `json:"score"`
+}
+
+type CreateQuizInput struct {
+	CourseID  string                 `json:"courseID"`
+	Name      string                 `json:"name"`
+	CreatedAt time.Time              `json:"createdAt"`
+	Questions []*CreateQuestionInput `json:"questions"`
+}
+
+type Lo struct {
+	ID       string     `json:"id"`
+	Title    string     `json:"title"`
+	Levels   []*LOlevel `json:"levels"`
+	PloLinks []*Plo     `json:"ploLinks"`
+}
+
+type LOlevel struct {
+	Level       int `json:"level"`
+	Description int `json:"description"`
+}
+
+type Plo struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+type PLOGroup struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+}
+
+type Program struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type Question struct {
+	ID       string            `json:"id"`
+	Title    string            `json:"title"`
+	MaxScore int               `json:"maxScore"`
+	Results  []*QuestionResult `json:"results"`
+	LoLinks  []*QuestionLink   `json:"loLinks"`
+}
+
+type QuestionLink struct {
+	LoID  string `json:"loID"`
+	Level string `json:"level"`
+}
+
+type QuestionResult struct {
+	StudentID string `json:"studentID"`
+	Score     int    `json:"score"`
+}
+
+type Quiz struct {
+	ID        string      `json:"id"`
+	Name      string      `json:"name"`
+	CreatedAt time.Time   `json:"createdAt"`
+	Questions []*Question `json:"questions"`
 }

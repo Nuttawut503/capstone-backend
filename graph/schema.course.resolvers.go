@@ -11,11 +11,23 @@ import (
 	"github.com/Nuttawut503/capstone-backend/graph/model"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+func (r *mutationResolver) CreateCourse(ctx context.Context, input model.CreateCourseInput) (*model.Course, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+func (r *mutationResolver) CreateLOs(ctx context.Context, input model.CreateLOSetInput) ([]string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Courses(ctx context.Context, programID string) ([]*model.Course, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Course(ctx context.Context, courseID string) (*model.Course, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Los(ctx context.Context, courseID string) ([]*model.Lo, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
