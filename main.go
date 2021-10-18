@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"time"
 
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/Nuttawut503/capstone-backend/auth"
 	"github.com/Nuttawut503/capstone-backend/db"
+	"github.com/Nuttawut503/capstone-backend/graph"
+	"github.com/Nuttawut503/capstone-backend/graph/generated"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
-	"github.com/golang-jwt/jwt/v4"
-	"github.com/google/uuid"
 	"github.com/spf13/viper"
 )
 
@@ -51,45 +52,22 @@ func main() {
 
 	fmt.Println("Key foo => ", val)
 
-	_ = gin.Default()
-	// r.GET("/", func(c *gin.Context) {
-	// 	c.String(200, "Hello World!")
-	// })
-
-	// r.POST("/auth", func(c *gin.Context) {
-	// 	c.JSON(200, gin.H{
-	// 		"message": "ping",
-	// 	})
-	// })
-	// r.Run(":8080")
-	generatedTime := time.Now()
-	accessUUID := uuid.New().String()
-	refreshUUID := uuid.New().String()
-	userID := "1150"
-	fmt.Println("access_uuid: ", accessUUID)
-	fmt.Println("refresh_uuid: ", refreshUUID)
-	AccessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
-		"authorized":  true,
-		"access_uuid": accessUUID,
-		"user_id":     userID,
-		"exp":         generatedTime.Add(time.Minute * 15).Unix(),
-	}).SignedString([]byte(viper.GetString("ACCESS_SECRET")))
-	fmt.Println("access: ", AccessToken)
-	RefreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
-		"refresh_uuid": refreshUUID,
-		"user_id":      userID,
-		"exp":          generatedTime.Add(time.Hour * 6).Unix(),
-	}).SignedString([]byte(viper.GetString("ACCESS_SECRET")))
-	fmt.Println("refresh: ", RefreshToken)
-	token, err := jwt.Parse(AccessToken, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("unexpected signing method")
+	r := gin.Default()
+	r.GET("/", func() gin.HandlerFunc {
+		return func(c *gin.Context) {
+			playground.Handler("GraphQL playground", "/query").ServeHTTP(c.Writer, c.Request)
 		}
-		return []byte(viper.GetString("ACCESS_SECRET")), nil
+	}())
+	r.POST("/query", func(c *gin.Context) {
+		handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}})).ServeHTTP(c.Writer, c.Request)
 	})
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(token.Claims.(jwt.MapClaims))
-	}
+	auth.SetAuthRouter(r.Group("/auth"), rdb, ctx)
+	authorized := r.Group("/secret", auth.GetMiddleware(rdb, ctx))
+	authorized.GET("/me", func(c *gin.Context) {
+		userID := c.MustGet("user_id").(string)
+		c.JSON(200, gin.H{
+			"response": "Welcome " + userID,
+		})
+	})
+	r.Run(":8080")
 }
