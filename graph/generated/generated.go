@@ -945,9 +945,9 @@ type LOLevel {
 }
 
 type Query {
-  courses(programID: String!): [Course!]!
-  course(courseID: String!): Course!
-  los(courseID: String!): [LO!]!
+  courses(programID: ID!): [Course!]!
+  course(courseID: ID!): Course!
+  los(courseID: ID!): [LO!]!
 }
 
 input CreateCourseInput {
@@ -969,8 +969,8 @@ input CreateLOLevelInput {
 }
 
 type CreateLOLinkResult {
-  loID: String!
-  ploID: String!
+  loID: ID!
+  ploID: ID!
 }
 
 input CreateLOInput {
@@ -980,31 +980,31 @@ input CreateLOInput {
 }
 
 type CreateLOResult {
-  id: String!
+  id: ID!
 }
 
 type DeleteLOResult {
-  id: String!
+  id: ID!
 }
 
 type DeleteLOLevelResult {
-  id: String!
+  id: ID!
 }
 
 type DeleteLOLinkResult {
-  loID: String!
-  ploID: String!
+  loID: ID!
+  ploID: ID!
 }
 
 type Mutation {
-  createCourse(programID: String!, input: CreateCourseInput!): Course!
-  createLOs(courseID: String!, input: [CreateLOsInput!]!): [CreateLOResult!]!
-  createLOLink(loID: String!, ploID: String!): CreateLOLinkResult!
-  createLO(courseID: String!, input: CreateLOInput!): CreateLOResult!
-  createLOLevel(loID: String!, input: CreateLOLevelInput!): CreateLOResult!
-  deleteLO(id: String!): DeleteLOResult!
-  deleteLOLevel(id: String!, level: Int!): DeleteLOLevelResult!
-  deleteLOLink(loID: String!, ploID: String!): DeleteLOLinkResult!
+  createCourse(programID: ID!, input: CreateCourseInput!): Course!
+  createLOs(courseID: ID!, input: [CreateLOsInput!]!): [CreateLOResult!]!
+  createLOLink(loID: ID!, ploID: ID!): CreateLOLinkResult!
+  createLO(courseID: ID!, input: CreateLOInput!): CreateLOResult!
+  createLOLevel(loID: ID!, input: CreateLOLevelInput!): CreateLOResult!
+  deleteLO(id: ID!): DeleteLOResult!
+  deleteLOLevel(id: ID!, level: Int!): DeleteLOLevelResult!
+  deleteLOLink(loID: ID!, ploID: ID!): DeleteLOLinkResult!
 }
 `, BuiltIn: false},
 	{Name: "graph/schema.program.graphqls", Input: `type Program {
@@ -1027,8 +1027,8 @@ type PLO {
 
 extend type Query {
   programs: [Program!]!
-  ploGroups(programID: String!): [PLOGroup!]!
-  plos(ploGroupID: String!): [PLO!]!
+  ploGroups(programID: ID!): [PLOGroup!]!
+  plos(ploGroupID: ID!): [PLO!]!
 }
 
 input CreateProgramInput {
@@ -1047,19 +1047,19 @@ input CreatePLOInput {
 }
 
 type deletePLOGroupResult {
-  id: String!
+  id: ID!
 }
 
 type deletePLOResult {
-  id: String!
+  id: ID!
 }
 
 extend type Mutation {
   createProgram(input: CreateProgramInput!): Program!
-  createPLOGroup(programID: String!, name: String!, input: [CreatePLOsInput!]!): PLOGroup!
-  createPLO(ploGroupID: String!, input: CreatePLOInput!): PLO!
-  deletePLOGroup(id: String!): deletePLOGroupResult!
-  deletePLO(id: String!): deletePLOResult!
+  createPLOGroup(programID: ID!, name: String!, input: [CreatePLOsInput!]!): PLOGroup!
+  createPLO(ploGroupID: ID!, input: CreatePLOInput!): PLO!
+  deletePLOGroup(id: ID!): deletePLOGroupResult!
+  deletePLO(id: ID!): deletePLOResult!
 }
 `, BuiltIn: false},
 	{Name: "graph/schema.quiz.graphqls", Input: `scalar Time
@@ -1085,12 +1085,12 @@ type QuestionResult {
 }
 
 type QuestionLink {
-  loID: String!
+  loID: ID!
   level: Int!
 }
 
 extend type Query {
-  quiz(courseID: String!): [Quiz!]!
+  quiz(courseID: ID!): [Quiz!]!
 }
 
 input CreateQuizInput {
@@ -1111,39 +1111,39 @@ input CreateQuestionResultInput {
 }
 
 type CreateQuizResult {
-  id: String!
+  id: ID!
 }
 
 input CreateQuestionLinkInput {
-  questionID: String!
-  loID: String!
+  questionID: ID!
+  loID: ID!
   level: Int!
 }
 
 type CreateQuestionLinkResult {
-  questionID: String!
-  loID: String!
+  questionID: ID!
+  loID: ID!
 }
 
 type DeleteQuizResult {
-  id: String!
+  id: ID!
 }
 
 input DeleteQuestionLinkInput {
-  questionID: String!
-  loID: String!
+  questionID: ID!
+  loID: ID!
   level: Int!
 }
 
 type DeleteQuestionLinkResult {
-  questionID: String!
-  loID: String!
+  questionID: ID!
+  loID: ID!
 }
 
 extend type Mutation {
-  createQuiz(courseID: String!, input: CreateQuizInput): CreateQuizResult!
+  createQuiz(courseID: ID!, input: CreateQuizInput): CreateQuizResult!
   createQuestionLink(input: CreateQuestionLinkInput): CreateQuestionLinkResult!
-  deleteQuiz(id: String!): DeleteQuizResult!
+  deleteQuiz(id: ID!): DeleteQuizResult!
   deleteQuestionLink(input: DeleteQuestionLinkInput!): DeleteQuestionLinkResult!
 }
 `, BuiltIn: false},
@@ -1160,7 +1160,7 @@ func (ec *executionContext) field_Mutation_createCourse_args(ctx context.Context
 	var arg0 string
 	if tmp, ok := rawArgs["programID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("programID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1184,7 +1184,7 @@ func (ec *executionContext) field_Mutation_createLOLevel_args(ctx context.Contex
 	var arg0 string
 	if tmp, ok := rawArgs["loID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1208,7 +1208,7 @@ func (ec *executionContext) field_Mutation_createLOLink_args(ctx context.Context
 	var arg0 string
 	if tmp, ok := rawArgs["loID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1217,7 +1217,7 @@ func (ec *executionContext) field_Mutation_createLOLink_args(ctx context.Context
 	var arg1 string
 	if tmp, ok := rawArgs["ploID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ploID"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1232,7 +1232,7 @@ func (ec *executionContext) field_Mutation_createLO_args(ctx context.Context, ra
 	var arg0 string
 	if tmp, ok := rawArgs["courseID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1256,7 +1256,7 @@ func (ec *executionContext) field_Mutation_createLOs_args(ctx context.Context, r
 	var arg0 string
 	if tmp, ok := rawArgs["courseID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1280,7 +1280,7 @@ func (ec *executionContext) field_Mutation_createPLOGroup_args(ctx context.Conte
 	var arg0 string
 	if tmp, ok := rawArgs["programID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("programID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1313,7 +1313,7 @@ func (ec *executionContext) field_Mutation_createPLO_args(ctx context.Context, r
 	var arg0 string
 	if tmp, ok := rawArgs["ploGroupID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ploGroupID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1367,7 +1367,7 @@ func (ec *executionContext) field_Mutation_createQuiz_args(ctx context.Context, 
 	var arg0 string
 	if tmp, ok := rawArgs["courseID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1391,7 +1391,7 @@ func (ec *executionContext) field_Mutation_deleteLOLevel_args(ctx context.Contex
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1415,7 +1415,7 @@ func (ec *executionContext) field_Mutation_deleteLOLink_args(ctx context.Context
 	var arg0 string
 	if tmp, ok := rawArgs["loID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1424,7 +1424,7 @@ func (ec *executionContext) field_Mutation_deleteLOLink_args(ctx context.Context
 	var arg1 string
 	if tmp, ok := rawArgs["ploID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ploID"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1439,7 +1439,7 @@ func (ec *executionContext) field_Mutation_deleteLO_args(ctx context.Context, ra
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1454,7 +1454,7 @@ func (ec *executionContext) field_Mutation_deletePLOGroup_args(ctx context.Conte
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1469,7 +1469,7 @@ func (ec *executionContext) field_Mutation_deletePLO_args(ctx context.Context, r
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1499,7 +1499,7 @@ func (ec *executionContext) field_Mutation_deleteQuiz_args(ctx context.Context, 
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1529,7 +1529,7 @@ func (ec *executionContext) field_Query_course_args(ctx context.Context, rawArgs
 	var arg0 string
 	if tmp, ok := rawArgs["courseID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1544,7 +1544,7 @@ func (ec *executionContext) field_Query_courses_args(ctx context.Context, rawArg
 	var arg0 string
 	if tmp, ok := rawArgs["programID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("programID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1559,7 +1559,7 @@ func (ec *executionContext) field_Query_los_args(ctx context.Context, rawArgs ma
 	var arg0 string
 	if tmp, ok := rawArgs["courseID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1574,7 +1574,7 @@ func (ec *executionContext) field_Query_ploGroups_args(ctx context.Context, rawA
 	var arg0 string
 	if tmp, ok := rawArgs["programID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("programID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1589,7 +1589,7 @@ func (ec *executionContext) field_Query_plos_args(ctx context.Context, rawArgs m
 	var arg0 string
 	if tmp, ok := rawArgs["ploGroupID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ploGroupID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1604,7 +1604,7 @@ func (ec *executionContext) field_Query_quiz_args(ctx context.Context, rawArgs m
 	var arg0 string
 	if tmp, ok := rawArgs["courseID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1893,7 +1893,7 @@ func (ec *executionContext) _CreateLOLinkResult_loID(ctx context.Context, field 
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _CreateLOLinkResult_ploID(ctx context.Context, field graphql.CollectedField, obj *model.CreateLOLinkResult) (ret graphql.Marshaler) {
@@ -1928,7 +1928,7 @@ func (ec *executionContext) _CreateLOLinkResult_ploID(ctx context.Context, field
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _CreateLOResult_id(ctx context.Context, field graphql.CollectedField, obj *model.CreateLOResult) (ret graphql.Marshaler) {
@@ -1963,7 +1963,7 @@ func (ec *executionContext) _CreateLOResult_id(ctx context.Context, field graphq
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _CreateQuestionLinkResult_questionID(ctx context.Context, field graphql.CollectedField, obj *model.CreateQuestionLinkResult) (ret graphql.Marshaler) {
@@ -1998,7 +1998,7 @@ func (ec *executionContext) _CreateQuestionLinkResult_questionID(ctx context.Con
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _CreateQuestionLinkResult_loID(ctx context.Context, field graphql.CollectedField, obj *model.CreateQuestionLinkResult) (ret graphql.Marshaler) {
@@ -2033,7 +2033,7 @@ func (ec *executionContext) _CreateQuestionLinkResult_loID(ctx context.Context, 
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _CreateQuizResult_id(ctx context.Context, field graphql.CollectedField, obj *model.CreateQuizResult) (ret graphql.Marshaler) {
@@ -2068,7 +2068,7 @@ func (ec *executionContext) _CreateQuizResult_id(ctx context.Context, field grap
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _DeleteLOLevelResult_id(ctx context.Context, field graphql.CollectedField, obj *model.DeleteLOLevelResult) (ret graphql.Marshaler) {
@@ -2103,7 +2103,7 @@ func (ec *executionContext) _DeleteLOLevelResult_id(ctx context.Context, field g
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _DeleteLOLinkResult_loID(ctx context.Context, field graphql.CollectedField, obj *model.DeleteLOLinkResult) (ret graphql.Marshaler) {
@@ -2138,7 +2138,7 @@ func (ec *executionContext) _DeleteLOLinkResult_loID(ctx context.Context, field 
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _DeleteLOLinkResult_ploID(ctx context.Context, field graphql.CollectedField, obj *model.DeleteLOLinkResult) (ret graphql.Marshaler) {
@@ -2173,7 +2173,7 @@ func (ec *executionContext) _DeleteLOLinkResult_ploID(ctx context.Context, field
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _DeleteLOResult_id(ctx context.Context, field graphql.CollectedField, obj *model.DeleteLOResult) (ret graphql.Marshaler) {
@@ -2208,7 +2208,7 @@ func (ec *executionContext) _DeleteLOResult_id(ctx context.Context, field graphq
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _DeleteQuestionLinkResult_questionID(ctx context.Context, field graphql.CollectedField, obj *model.DeleteQuestionLinkResult) (ret graphql.Marshaler) {
@@ -2243,7 +2243,7 @@ func (ec *executionContext) _DeleteQuestionLinkResult_questionID(ctx context.Con
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _DeleteQuestionLinkResult_loID(ctx context.Context, field graphql.CollectedField, obj *model.DeleteQuestionLinkResult) (ret graphql.Marshaler) {
@@ -2278,7 +2278,7 @@ func (ec *executionContext) _DeleteQuestionLinkResult_loID(ctx context.Context, 
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _DeleteQuizResult_id(ctx context.Context, field graphql.CollectedField, obj *model.DeleteQuizResult) (ret graphql.Marshaler) {
@@ -2313,7 +2313,7 @@ func (ec *executionContext) _DeleteQuizResult_id(ctx context.Context, field grap
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _LO_id(ctx context.Context, field graphql.CollectedField, obj *model.Lo) (ret graphql.Marshaler) {
@@ -4120,7 +4120,7 @@ func (ec *executionContext) _QuestionLink_loID(ctx context.Context, field graphq
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _QuestionLink_level(ctx context.Context, field graphql.CollectedField, obj *model.QuestionLink) (ret graphql.Marshaler) {
@@ -5518,7 +5518,7 @@ func (ec *executionContext) _deletePLOGroupResult_id(ctx context.Context, field 
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _deletePLOResult_id(ctx context.Context, field graphql.CollectedField, obj *model.DeletePLOResult) (ret graphql.Marshaler) {
@@ -5553,7 +5553,7 @@ func (ec *executionContext) _deletePLOResult_id(ctx context.Context, field graph
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 // endregion **************************** field.gotpl *****************************
@@ -5861,7 +5861,7 @@ func (ec *executionContext) unmarshalInputCreateQuestionLinkInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("questionID"))
-			it.QuestionID, err = ec.unmarshalNString2string(ctx, v)
+			it.QuestionID, err = ec.unmarshalNID2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5869,7 +5869,7 @@ func (ec *executionContext) unmarshalInputCreateQuestionLinkInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loID"))
-			it.LoID, err = ec.unmarshalNString2string(ctx, v)
+			it.LoID, err = ec.unmarshalNID2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5970,7 +5970,7 @@ func (ec *executionContext) unmarshalInputDeleteQuestionLinkInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("questionID"))
-			it.QuestionID, err = ec.unmarshalNString2string(ctx, v)
+			it.QuestionID, err = ec.unmarshalNID2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5978,7 +5978,7 @@ func (ec *executionContext) unmarshalInputDeleteQuestionLinkInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loID"))
-			it.LoID, err = ec.unmarshalNString2string(ctx, v)
+			it.LoID, err = ec.unmarshalNID2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -9,6 +9,7 @@ import (
 	"github.com/Nuttawut503/capstone-backend/db"
 	"github.com/Nuttawut503/capstone-backend/graph"
 	"github.com/Nuttawut503/capstone-backend/graph/generated"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
@@ -39,13 +40,14 @@ func main() {
 	ctx := context.Background()
 
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.GET("/", func() gin.HandlerFunc {
 		return func(c *gin.Context) {
 			playground.Handler("GraphQL playground", "/api/query").ServeHTTP(c.Writer, c.Request)
 		}
 	}())
 	auth.SetAuthRouter(r.Group("/auth"), rdb, ctx)
-	authorized := r.Group("/api", auth.GetMiddleware(rdb, ctx))
+	authorized := r.Group("/api") //, auth.GetMiddleware(rdb, ctx))
 	authorized.POST("/query", func(c *gin.Context) {
 		handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{Client: client}})).ServeHTTP(c.Writer, c.Request)
 	})

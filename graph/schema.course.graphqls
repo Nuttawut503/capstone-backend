@@ -22,9 +22,9 @@ type LOLevel {
 }
 
 type Query {
-  courses(programID: String!): [Course!]!
-  course(courseID: String!): Course!
-  los(courseID: String!): [LO!]!
+  courses(programID: ID!): [Course!]!
+  course(courseID: ID!): Course!
+  los(courseID: ID!): [LO!]!
 }
 
 input CreateCourseInput {
@@ -46,8 +46,8 @@ input CreateLOLevelInput {
 }
 
 type CreateLOLinkResult {
-  loID: String!
-  ploID: String!
+  loID: ID!
+  ploID: ID!
 }
 
 input CreateLOInput {
@@ -57,29 +57,29 @@ input CreateLOInput {
 }
 
 type CreateLOResult {
-  id: String!
+  id: ID!
 }
 
 type DeleteLOResult {
-  id: String!
+  id: ID!
 }
 
 type DeleteLOLevelResult {
-  id: String!
+  id: ID!
 }
 
 type DeleteLOLinkResult {
-  loID: String!
-  ploID: String!
+  loID: ID!
+  ploID: ID!
 }
 
 type Mutation {
-  createCourse(programID: String!, input: CreateCourseInput!): Course!
-  createLOs(courseID: String!, input: [CreateLOsInput!]!): [CreateLOResult!]!
-  createLOLink(loID: String!, ploID: String!): CreateLOLinkResult!
-  createLO(courseID: String!, input: CreateLOInput!): CreateLOResult!
-  createLOLevel(loID: String!, input: CreateLOLevelInput!): CreateLOResult!
-  deleteLO(id: String!): DeleteLOResult!
-  deleteLOLevel(id: String!, level: Int!): DeleteLOLevelResult!
-  deleteLOLink(loID: String!, ploID: String!): DeleteLOLinkResult!
+  createCourse(programID: ID!, input: CreateCourseInput!): Course!
+  createLOs(courseID: ID!, input: [CreateLOsInput!]!): [CreateLOResult!]!
+  createLOLink(loID: ID!, ploID: ID!): CreateLOLinkResult!
+  createLO(courseID: ID!, input: CreateLOInput!): CreateLOResult!
+  createLOLevel(loID: ID!, input: CreateLOLevelInput!): CreateLOResult!
+  deleteLO(id: ID!): DeleteLOResult!
+  deleteLOLevel(id: ID!, level: Int!): DeleteLOLevelResult!
+  deleteLOLink(loID: ID!, ploID: ID!): DeleteLOLinkResult!
 }

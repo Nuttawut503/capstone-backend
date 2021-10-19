@@ -18,8 +18,8 @@ type PLO {
 
 extend type Query {
   programs: [Program!]!
-  ploGroups(programID: String!): [PLOGroup!]!
-  plos(ploGroupID: String!): [PLO!]!
+  ploGroups(programID: ID!): [PLOGroup!]!
+  plos(ploGroupID: ID!): [PLO!]!
 }
 
 input CreateProgramInput {
@@ -38,17 +38,17 @@ input CreatePLOInput {
 }
 
 type deletePLOGroupResult {
-  id: String!
+  id: ID!
 }
 
 type deletePLOResult {
-  id: String!
+  id: ID!
 }
 
 extend type Mutation {
   createProgram(input: CreateProgramInput!): Program!
-  createPLOGroup(programID: String!, name: String!, input: [CreatePLOsInput!]!): PLOGroup!
-  createPLO(ploGroupID: String!, input: CreatePLOInput!): PLO!
-  deletePLOGroup(id: String!): deletePLOGroupResult!
-  deletePLO(id: String!): deletePLOResult!
+  createPLOGroup(programID: ID!, name: String!, input: [CreatePLOsInput!]!): PLOGroup!
+  createPLO(ploGroupID: ID!, input: CreatePLOInput!): PLO!
+  deletePLOGroup(id: ID!): deletePLOGroupResult!
+  deletePLO(id: ID!): deletePLOResult!
 }
