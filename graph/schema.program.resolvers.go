@@ -26,18 +26,18 @@ func (r *mutationResolver) CreateProgram(ctx context.Context, input model.Create
 	}, nil
 }
 
-func (r *mutationResolver) CreatePLOGroupInput(ctx context.Context, input model.CreatePLOGroupInput) (*model.PLOGroup, error) {
+func (r *mutationResolver) CreatePLOGroup(ctx context.Context, programID string, name string, input []*model.CreatePLOsInput) (*model.PLOGroup, error) {
 	createPLOGroup, err := r.Client.PLOgroup.CreateOne(
-		db.PLOgroup.Name.Set(input.Name),
+		db.PLOgroup.Name.Set(name),
 		db.PLOgroup.Program.Link(
-			db.Program.ID.Equals(input.ProgramID),
+			db.Program.ID.Equals(programID),
 		),
 	).Exec(ctx)
 	if err != nil {
 		return &model.PLOGroup{}, err
 	}
 	transactions := []transaction.Param{}
-	for _, plo := range input.Plos {
+	for _, plo := range input {
 		transactions = append(transactions, r.Client.PLO.CreateOne(
 			db.PLO.Title.Set(plo.Title),
 			db.PLO.Description.Set(plo.Description),
@@ -55,6 +55,49 @@ func (r *mutationResolver) CreatePLOGroupInput(ctx context.Context, input model.
 	}, nil
 }
 
+func (r *mutationResolver) CreatePlo(ctx context.Context, ploGroupID string, input model.CreatePLOInput) (*model.Plo, error) {
+	createdPLO, err := r.Client.PLO.CreateOne(
+		db.PLO.Title.Set(input.Title),
+		db.PLO.Description.Set(input.Description),
+		db.PLO.PloGroup.Link(
+			db.PLOgroup.ID.Equals(ploGroupID),
+		),
+	).Exec(ctx)
+	if err != nil {
+		return &model.Plo{}, err
+	}
+	return &model.Plo{
+		ID:          createdPLO.ID,
+		Title:       createdPLO.Title,
+		Description: createdPLO.Description,
+		PloGroupID:  createdPLO.PloGroupID,
+	}, nil
+}
+
+func (r *mutationResolver) DeletePLOGroup(ctx context.Context, id string) (*model.DeletePLOGroupResult, error) {
+	deleted, err := r.Client.PLOgroup.FindUnique(
+		db.PLOgroup.ID.Equals(id),
+	).Delete().Exec(ctx)
+	if err != nil {
+		return &model.DeletePLOGroupResult{}, err
+	}
+	return &model.DeletePLOGroupResult{
+		ID: deleted.ID,
+	}, nil
+}
+
+func (r *mutationResolver) DeletePlo(ctx context.Context, id string) (*model.DeletePLOResult, error) {
+	deleted, err := r.Client.PLO.FindUnique(
+		db.PLO.ID.Equals(id),
+	).Delete().Exec(ctx)
+	if err != nil {
+		return &model.DeletePLOResult{}, err
+	}
+	return &model.DeletePLOResult{
+		ID: deleted.ID,
+	}, nil
+}
+
 func (r *queryResolver) Programs(ctx context.Context) ([]*model.Program, error) {
 	allPrograms, err := r.Client.Program.FindMany().Exec(ctx)
 	if err != nil {
@@ -69,7 +112,6 @@ func (r *queryResolver) Programs(ctx context.Context) ([]*model.Program, error) 
 		})
 	}
 	return programs, nil
-
 }
 
 func (r *queryResolver) PloGroups(ctx context.Context, programID string) ([]*model.PLOGroup, error) {

@@ -11,11 +11,35 @@ import (
 	"github.com/Nuttawut503/capstone-backend/graph/model"
 )
 
-func (r *mutationResolver) CreateCourse(ctx context.Context, input model.CreateCourseInput) (*model.Course, error) {
+func (r *mutationResolver) CreateCourse(ctx context.Context, programID string, input model.CreateCourseInput) (*model.Course, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateLOs(ctx context.Context, input model.CreateLOSetInput) ([]string, error) {
+func (r *mutationResolver) CreateLOs(ctx context.Context, courseID string, input []*model.CreateLOsInput) ([]*model.CreateLOResult, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) CreateLOLink(ctx context.Context, loID string, ploID string) (*model.CreateLOLinkResult, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) CreateLo(ctx context.Context, courseID string, input model.CreateLOInput) (*model.CreateLOResult, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) CreateLOLevel(ctx context.Context, loID string, input model.CreateLOLevelInput) (*model.CreateLOResult, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteLo(ctx context.Context, id string) (*model.DeleteLOResult, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteLOLevel(ctx context.Context, id string, level int) (*model.DeleteLOLevelResult, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteLOLink(ctx context.Context, loID string, ploID string) (*model.DeleteLOLinkResult, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

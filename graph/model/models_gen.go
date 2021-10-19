@@ -16,31 +16,41 @@ type Course struct {
 }
 
 type CreateCourseInput struct {
-	ProgramID string `json:"programID"`
-	Name      string `json:"name"`
-	Semester  int    `json:"semester"`
-	Year      int    `json:"year"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Semester    int    `json:"semester"`
+	Year        int    `json:"year"`
+	PloGroupID  string `json:"ploGroupID"`
 }
 
-type CreateLOSetInput struct {
-	CourseID string            `json:"courseID"`
-	Los      []*CreateLOsInput `json:"los"`
+type CreateLOInput struct {
+	Title       string `json:"title"`
+	Level       int    `json:"level"`
+	Description int    `json:"description"`
 }
 
-type CreateLOlevelsInput struct {
+type CreateLOLevelInput struct {
 	Level       int    `json:"level"`
 	Description string `json:"description"`
 }
 
-type CreateLOsInput struct {
-	Title  string                 `json:"title"`
-	Levels []*CreateLOlevelsInput `json:"levels"`
+type CreateLOLinkResult struct {
+	LoID  string `json:"loID"`
+	PloID string `json:"ploID"`
 }
 
-type CreatePLOGroupInput struct {
-	ProgramID string             `json:"programID"`
-	Name      string             `json:"name"`
-	Plos      []*CreatePLOsInput `json:"plos"`
+type CreateLOResult struct {
+	ID string `json:"id"`
+}
+
+type CreateLOsInput struct {
+	Title  string                `json:"title"`
+	Levels []*CreateLOLevelInput `json:"levels"`
+}
+
+type CreatePLOInput struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }
 
 type CreatePLOsInput struct {
@@ -65,26 +75,58 @@ type CreateQuestionLinkInput struct {
 	Level      int    `json:"level"`
 }
 
+type CreateQuestionLinkResult struct {
+	QuestionID string `json:"questionID"`
+	LoID       string `json:"loID"`
+}
+
 type CreateQuestionResultInput struct {
 	StudentID string `json:"studentID"`
 	Score     int    `json:"score"`
 }
 
 type CreateQuizInput struct {
-	CourseID  string                 `json:"courseID"`
 	Name      string                 `json:"name"`
 	CreatedAt time.Time              `json:"createdAt"`
 	Questions []*CreateQuestionInput `json:"questions"`
 }
 
+type DeleteLOLevelResult struct {
+	ID string `json:"id"`
+}
+
+type DeleteLOLinkResult struct {
+	LoID  string `json:"loID"`
+	PloID string `json:"ploID"`
+}
+
+type DeleteLOResult struct {
+	ID string `json:"id"`
+}
+
+type DeleteQuestionLinkInput struct {
+	QuestionID string `json:"questionID"`
+	LoID       string `json:"loID"`
+	Level      int    `json:"level"`
+}
+
+type DeleteQuestionLinkResult struct {
+	QuestionID string `json:"questionID"`
+	LoID       string `json:"loID"`
+}
+
+type DeleteQuizResult struct {
+	ID string `json:"id"`
+}
+
 type Lo struct {
 	ID       string     `json:"id"`
 	Title    string     `json:"title"`
-	Levels   []*LOlevel `json:"levels"`
+	Levels   []*LOLevel `json:"levels"`
 	PloLinks []*Plo     `json:"ploLinks"`
 }
 
-type LOlevel struct {
+type LOLevel struct {
 	Level       int `json:"level"`
 	Description int `json:"description"`
 }
@@ -93,6 +135,7 @@ type Plo struct {
 	ID          string `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	PloGroupID  string `json:"ploGroupID"`
 }
 
 type PLOGroup struct {
@@ -129,4 +172,12 @@ type Quiz struct {
 	Name      string      `json:"name"`
 	CreatedAt time.Time   `json:"createdAt"`
 	Questions []*Question `json:"questions"`
+}
+
+type DeletePLOGroupResult struct {
+	ID string `json:"id"`
+}
+
+type DeletePLOResult struct {
+	ID string `json:"id"`
 }

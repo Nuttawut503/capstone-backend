@@ -10,11 +10,19 @@ import (
 	"github.com/Nuttawut503/capstone-backend/graph/model"
 )
 
-func (r *mutationResolver) CreateQuiz(ctx context.Context, input *model.CreateQuizInput) (string, error) {
+func (r *mutationResolver) CreateQuiz(ctx context.Context, courseID string, input *model.CreateQuizInput) (string, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateQuestionLink(ctx context.Context, input *model.CreateQuestionLinkInput) (bool, error) {
+func (r *mutationResolver) CreateQuestionLink(ctx context.Context, input *model.CreateQuestionLinkInput) (*model.CreateQuestionLinkResult, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteQuiz(ctx context.Context, id string) (*model.DeleteQuizResult, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteQuestionLink(ctx context.Context, input model.DeleteQuestionLinkInput) (*model.DeleteQuestionLinkResult, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

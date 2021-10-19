@@ -13,6 +13,7 @@ type PLO {
   id: ID!
   title: String!
   description: String!
+  ploGroupID: String!
 }
 
 extend type Query {
@@ -26,18 +27,28 @@ input CreateProgramInput {
   description: String!
 }
 
-input CreatePLOGroupInput {
-  programID: String!
-  name: String!
-  plos: [CreatePLOsInput!]!
-}
-
 input CreatePLOsInput {
   title: String!
   description: String!
 }
 
+input CreatePLOInput {
+  title: String!
+  description: String!
+}
+
+type deletePLOGroupResult {
+  id: String!
+}
+
+type deletePLOResult {
+  id: String!
+}
+
 extend type Mutation {
   createProgram(input: CreateProgramInput!): Program!
-  createPLOGroupInput(input: CreatePLOGroupInput!): PLOGroup!
+  createPLOGroup(programID: String!, name: String!, input: [CreatePLOsInput!]!): PLOGroup!
+  createPLO(ploGroupID: String!, input: CreatePLOInput!): PLO!
+  deletePLOGroup(id: String!): deletePLOGroupResult!
+  deletePLO(id: String!): deletePLOResult!
 }
