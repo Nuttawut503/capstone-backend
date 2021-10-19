@@ -1,5 +1,5 @@
 # capstone-backend
-This project is written in GO
+This project is written in GO [Link to the frontend repo](https://github.com/NapatJamjan/capstone-frontend)
 
 ## Used libraries
 | Name | Description |
