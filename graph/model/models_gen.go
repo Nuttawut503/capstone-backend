@@ -91,6 +91,10 @@ type CreateQuizInput struct {
 	Questions []*CreateQuestionInput `json:"questions"`
 }
 
+type CreateQuizResult struct {
+	ID string `json:"id"`
+}
+
 type DeleteLOLevelResult struct {
 	ID string `json:"id"`
 }
@@ -159,7 +163,7 @@ type Question struct {
 
 type QuestionLink struct {
 	LoID  string `json:"loID"`
-	Level string `json:"level"`
+	Level int    `json:"level"`
 }
 
 type QuestionResult struct {

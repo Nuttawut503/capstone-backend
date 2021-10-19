@@ -67,6 +67,10 @@ type ComplexityRoot struct {
 		QuestionID func(childComplexity int) int
 	}
 
+	CreateQuizResult struct {
+		ID func(childComplexity int) int
+	}
+
 	DeleteLOLevelResult struct {
 		ID func(childComplexity int) int
 	}
@@ -197,7 +201,7 @@ type MutationResolver interface {
 	CreatePlo(ctx context.Context, ploGroupID string, input model.CreatePLOInput) (*model.Plo, error)
 	DeletePLOGroup(ctx context.Context, id string) (*model.DeletePLOGroupResult, error)
 	DeletePlo(ctx context.Context, id string) (*model.DeletePLOResult, error)
-	CreateQuiz(ctx context.Context, courseID string, input *model.CreateQuizInput) (string, error)
+	CreateQuiz(ctx context.Context, courseID string, input *model.CreateQuizInput) (*model.CreateQuizResult, error)
 	CreateQuestionLink(ctx context.Context, input *model.CreateQuestionLinkInput) (*model.CreateQuestionLinkResult, error)
 	DeleteQuiz(ctx context.Context, id string) (*model.DeleteQuizResult, error)
 	DeleteQuestionLink(ctx context.Context, input model.DeleteQuestionLinkInput) (*model.DeleteQuestionLinkResult, error)
@@ -303,6 +307,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.CreateQuestionLinkResult.QuestionID(childComplexity), true
+
+	case "CreateQuizResult.id":
+		if e.complexity.CreateQuizResult.ID == nil {
+			break
+		}
+
+		return e.complexity.CreateQuizResult.ID(childComplexity), true
 
 	case "DeleteLOLevelResult.id":
 		if e.complexity.DeleteLOLevelResult.ID == nil {
@@ -1075,7 +1086,7 @@ type QuestionResult {
 
 type QuestionLink {
   loID: String!
-  level: String!
+  level: Int!
 }
 
 extend type Query {
@@ -1097,6 +1108,10 @@ input CreateQuestionInput {
 input CreateQuestionResultInput {
   studentID: String!
   score: Int!
+}
+
+type CreateQuizResult {
+  id: String!
 }
 
 input CreateQuestionLinkInput {
@@ -1126,7 +1141,7 @@ type DeleteQuestionLinkResult {
 }
 
 extend type Mutation {
-  createQuiz(courseID: String!, input: CreateQuizInput): String!
+  createQuiz(courseID: String!, input: CreateQuizInput): CreateQuizResult!
   createQuestionLink(input: CreateQuestionLinkInput): CreateQuestionLinkResult!
   deleteQuiz(id: String!): DeleteQuizResult!
   deleteQuestionLink(input: DeleteQuestionLinkInput!): DeleteQuestionLinkResult!
@@ -2005,6 +2020,41 @@ func (ec *executionContext) _CreateQuestionLinkResult_loID(ctx context.Context, 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LoID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _CreateQuizResult_id(ctx context.Context, field graphql.CollectedField, obj *model.CreateQuizResult) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "CreateQuizResult",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3059,9 +3109,9 @@ func (ec *executionContext) _Mutation_createQuiz(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.CreateQuizResult)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNCreateQuizResult2ᚖgithubᚗcomᚋNuttawut503ᚋcapstoneᚑbackendᚋgraphᚋmodelᚐCreateQuizResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createQuestionLink(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4103,9 +4153,9 @@ func (ec *executionContext) _QuestionLink_level(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _QuestionResult_studentID(ctx context.Context, field graphql.CollectedField, obj *model.QuestionResult) (ret graphql.Marshaler) {
@@ -6097,6 +6147,33 @@ func (ec *executionContext) _CreateQuestionLinkResult(ctx context.Context, sel a
 	return out
 }
 
+var createQuizResultImplementors = []string{"CreateQuizResult"}
+
+func (ec *executionContext) _CreateQuizResult(ctx context.Context, sel ast.SelectionSet, obj *model.CreateQuizResult) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, createQuizResultImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CreateQuizResult")
+		case "id":
+			out.Values[i] = ec._CreateQuizResult_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var deleteLOLevelResultImplementors = []string{"DeleteLOLevelResult"}
 
 func (ec *executionContext) _DeleteLOLevelResult(ctx context.Context, sel ast.SelectionSet, obj *model.DeleteLOLevelResult) graphql.Marshaler {
@@ -7435,6 +7512,20 @@ func (ec *executionContext) unmarshalNCreateQuestionResultInput2ᚕᚖgithubᚗc
 func (ec *executionContext) unmarshalNCreateQuestionResultInput2ᚖgithubᚗcomᚋNuttawut503ᚋcapstoneᚑbackendᚋgraphᚋmodelᚐCreateQuestionResultInput(ctx context.Context, v interface{}) (*model.CreateQuestionResultInput, error) {
 	res, err := ec.unmarshalInputCreateQuestionResultInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNCreateQuizResult2githubᚗcomᚋNuttawut503ᚋcapstoneᚑbackendᚋgraphᚋmodelᚐCreateQuizResult(ctx context.Context, sel ast.SelectionSet, v model.CreateQuizResult) graphql.Marshaler {
+	return ec._CreateQuizResult(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNCreateQuizResult2ᚖgithubᚗcomᚋNuttawut503ᚋcapstoneᚑbackendᚋgraphᚋmodelᚐCreateQuizResult(ctx context.Context, sel ast.SelectionSet, v *model.CreateQuizResult) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._CreateQuizResult(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNDeleteLOLevelResult2githubᚗcomᚋNuttawut503ᚋcapstoneᚑbackendᚋgraphᚋmodelᚐDeleteLOLevelResult(ctx context.Context, sel ast.SelectionSet, v model.DeleteLOLevelResult) graphql.Marshaler {

@@ -22,7 +22,7 @@ type QuestionResult {
 
 type QuestionLink {
   loID: String!
-  level: String!
+  level: Int!
 }
 
 extend type Query {
@@ -44,6 +44,10 @@ input CreateQuestionInput {
 input CreateQuestionResultInput {
   studentID: String!
   score: Int!
+}
+
+type CreateQuizResult {
+  id: String!
 }
 
 input CreateQuestionLinkInput {
@@ -73,7 +77,7 @@ type DeleteQuestionLinkResult {
 }
 
 extend type Mutation {
-  createQuiz(courseID: String!, input: CreateQuizInput): String!
+  createQuiz(courseID: String!, input: CreateQuizInput): CreateQuizResult!
   createQuestionLink(input: CreateQuestionLinkInput): CreateQuestionLinkResult!
   deleteQuiz(id: String!): DeleteQuizResult!
   deleteQuestionLink(input: DeleteQuestionLinkInput!): DeleteQuestionLinkResult!
