@@ -930,7 +930,7 @@ type LO {
 
 type LOLevel {
   level: Int!
-  description: Int!
+  description: String!
 }
 
 type Query {
@@ -965,7 +965,7 @@ type CreateLOLinkResult {
 input CreateLOInput {
   title: String!
   level: Int!
-  description: Int!
+  description: String!
 }
 
 type CreateLOResult {
@@ -2471,9 +2471,9 @@ func (ec *executionContext) _LOLevel_description(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createCourse(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5594,7 +5594,7 @@ func (ec *executionContext) unmarshalInputCreateLOInput(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			it.Description, err = ec.unmarshalNInt2int(ctx, v)
+			it.Description, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -26,7 +26,7 @@ type CreateCourseInput struct {
 type CreateLOInput struct {
 	Title       string `json:"title"`
 	Level       int    `json:"level"`
-	Description int    `json:"description"`
+	Description string `json:"description"`
 }
 
 type CreateLOLevelInput struct {
@@ -127,8 +127,8 @@ type Lo struct {
 }
 
 type LOLevel struct {
-	Level       int `json:"level"`
-	Description int `json:"description"`
+	Level       int    `json:"level"`
+	Description string `json:"description"`
 }
 
 type Plo struct {

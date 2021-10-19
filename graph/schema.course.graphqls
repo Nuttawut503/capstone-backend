@@ -18,7 +18,7 @@ type LO {
 
 type LOLevel {
   level: Int!
-  description: Int!
+  description: String!
 }
 
 type Query {
@@ -53,7 +53,7 @@ type CreateLOLinkResult {
 input CreateLOInput {
   title: String!
   level: Int!
-  description: Int!
+  description: String!
 }
 
 type CreateLOResult {
