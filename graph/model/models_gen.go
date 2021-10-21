@@ -95,6 +95,17 @@ type CreateQuizResult struct {
 	ID string `json:"id"`
 }
 
+type CreateStudentInput struct {
+	ID      string `json:"id"`
+	Email   string `json:"email"`
+	Name    string `json:"name"`
+	Surname string `json:"surname"`
+}
+
+type CreateStudentResult struct {
+	ID string `json:"id"`
+}
+
 type DeleteLOLevelResult struct {
 	ID string `json:"id"`
 }
@@ -162,8 +173,9 @@ type Question struct {
 }
 
 type QuestionLink struct {
-	LoID  string `json:"loID"`
-	Level int    `json:"level"`
+	LoID        string `json:"loID"`
+	Level       int    `json:"level"`
+	Description string `json:"description"`
 }
 
 type QuestionResult struct {
@@ -176,6 +188,13 @@ type Quiz struct {
 	Name      string      `json:"name"`
 	CreatedAt time.Time   `json:"createdAt"`
 	Questions []*Question `json:"questions"`
+}
+
+type User struct {
+	ID      string `json:"id"`
+	Email   string `json:"email"`
+	Name    string `json:"name"`
+	Surname string `json:"surname"`
 }
 
 type DeletePLOGroupResult struct {

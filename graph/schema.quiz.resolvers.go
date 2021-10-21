@@ -102,7 +102,7 @@ func (r *mutationResolver) DeleteQuestionLink(ctx context.Context, input model.D
 	}, nil
 }
 
-func (r *queryResolver) Quiz(ctx context.Context, courseID string) ([]*model.Quiz, error) {
+func (r *queryResolver) Quizzes(ctx context.Context, courseID string) ([]*model.Quiz, error) {
 	quizzes := []*model.Quiz{}
 	allQuizzes, err := r.Client.Quiz.FindMany(
 		db.Quiz.Course.Where(
@@ -110,7 +110,9 @@ func (r *queryResolver) Quiz(ctx context.Context, courseID string) ([]*model.Qui
 		),
 	).With(
 		db.Quiz.Questions.Fetch().With(
-			db.Question.Links.Fetch(),
+			db.Question.Links.Fetch().With(
+				db.QuestionLink.LoLevel.Fetch(),
+			),
 			db.Question.Results.Fetch(),
 		),
 	).Exec(ctx)
@@ -130,8 +132,9 @@ func (r *queryResolver) Quiz(ctx context.Context, courseID string) ([]*model.Qui
 			}
 			for _, loLink := range question.Links() {
 				loLinks = append(loLinks, &model.QuestionLink{
-					LoID:  loLink.LoID,
-					Level: loLink.Level,
+					LoID:        loLink.LoID,
+					Level:       loLink.Level,
+					Description: loLink.LoLevel().Description,
 				})
 			}
 			questions = append(questions, &model.Question{

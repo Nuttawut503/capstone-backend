@@ -13,8 +13,8 @@ model User {
   name    String
   surname String
 
-  students Student[]
-  teachers Teacher[]
+  student Student?
+  teacher Teacher?
 }
 
 model Student {

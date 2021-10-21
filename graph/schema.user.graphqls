@@ -1,0 +1,14 @@
+type CreateStudentResult {
+    id: ID!
+}
+
+input CreateStudentInput {
+    id: ID!
+    email: String!
+    name: String!
+    surname: String!
+}
+
+extend type Mutation {
+    createStudents(input: [CreateStudentInput!]!): [CreateStudentResult!]!
+}

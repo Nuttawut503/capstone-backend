@@ -243,6 +243,33 @@ func (r *queryResolver) Los(ctx context.Context, courseID string) ([]*model.Lo, 
 	return los, nil
 }
 
+func (r *queryResolver) StudentsInCourse(ctx context.Context, courseID string) ([]*model.User, error) {
+	allStudents, err := r.Client.User.FindMany(
+		db.User.Student.Where(
+			db.Student.QuestionResults.Every(
+				db.QuestionResult.Question.Where(
+					db.Question.Quiz.Where(
+						db.Quiz.CourseID.Equals(courseID),
+					),
+				),
+			),
+		),
+	).Exec(ctx)
+	if err != nil {
+		return []*model.User{}, err
+	}
+	students := []*model.User{}
+	for _, student := range allStudents {
+		students = append(students, &model.User{
+			ID:      student.ID,
+			Email:   student.Email,
+			Name:    student.Name,
+			Surname: student.Surname,
+		})
+	}
+	return students, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

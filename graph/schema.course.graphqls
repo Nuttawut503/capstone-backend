@@ -21,10 +21,18 @@ type LOLevel {
   description: String!
 }
 
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  surname: String!
+}
+
 type Query {
   courses(programID: ID!): [Course!]!
   course(courseID: ID!): Course!
   los(courseID: ID!): [LO!]!
+  studentsInCourse(courseID: ID!): [User!]!
 }
 
 input CreateCourseInput {

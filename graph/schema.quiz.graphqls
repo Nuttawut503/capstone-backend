@@ -23,10 +23,11 @@ type QuestionResult {
 type QuestionLink {
   loID: ID!
   level: Int!
+  description: String!
 }
 
 extend type Query {
-  quiz(courseID: ID!): [Quiz!]!
+  quizzes(courseID: ID!): [Quiz!]!
 }
 
 input CreateQuizInput {

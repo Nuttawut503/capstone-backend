@@ -18,6 +18,7 @@ type PLO {
 
 extend type Query {
   programs: [Program!]!
+  program(programID: ID!): Program!
   ploGroups(programID: ID!): [PLOGroup!]!
   plos(ploGroupID: ID!): [PLO!]!
 }

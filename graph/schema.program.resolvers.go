@@ -114,6 +114,20 @@ func (r *queryResolver) Programs(ctx context.Context) ([]*model.Program, error) 
 	return programs, nil
 }
 
+func (r *queryResolver) Program(ctx context.Context, programID string) (*model.Program, error) {
+	program, err := r.Client.Program.FindUnique(
+		db.Program.ID.Equals(programID),
+	).Exec(ctx)
+	if err != nil {
+		return &model.Program{}, err
+	}
+	return &model.Program{
+		ID:          program.ID,
+		Name:        program.Name,
+		Description: program.Description,
+	}, nil
+}
+
 func (r *queryResolver) PloGroups(ctx context.Context, programID string) ([]*model.PLOGroup, error) {
 	allPLOGroups, err := r.Client.PLOgroup.FindMany(
 		db.PLOgroup.ProgramID.Equals(programID),
